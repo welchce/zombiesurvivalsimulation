@@ -12,13 +12,13 @@ package zombiesurvivalsim;
  */
 public class Event {
     //The maximum allowed priority in the Queue.
-    static final int MAX_PRIORITY = 200;
+    static final int MAX_PRIORITY = 200000;
     //The minimum allowed priority in the Queue.
     static final int MIN_PRIORITY = 0;
     //The priority of the item.
     int _priority;
     //the char[] array for the item.
-    char _item[] = new char[5];
+    Object _item = new Object();
 
     /*
      *Construtor for the item that assigns the passed values into the item array
@@ -34,10 +34,12 @@ public class Event {
      *
      * @return the item array.
      */
-    public char[] getItem() { return _item; }
+    public Object getItem() { return _item; }
     /**
      *
      * @return the priority of the Event.
      */
     public int getPriority() { return _priority; }
+
+
 }
