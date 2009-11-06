@@ -55,7 +55,7 @@ public class Logger {
     public void write(Event thisEvent) throws java.io.IOException {
         FileWriter outFile = new FileWriter(_fileName,true);
         PrintWriter logWriter = new PrintWriter(outFile);
-        logWriter.write(thisEvent.ToString());
+        //logWriter.write(thisEvent.ToString());
         logWriter.close();
     }
 
