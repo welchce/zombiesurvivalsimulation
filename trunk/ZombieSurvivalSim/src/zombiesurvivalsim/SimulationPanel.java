@@ -29,14 +29,14 @@ public class SimulationPanel extends JPanel {
         g.setColor(Color.DARK_GRAY);
         g.fillRect(0, 0, getWidth(), getHeight());
         // Fun with zombies
-        g.drawImage(_zombieImage, getWidth()/2, getWidth()/2+24, this);
-        g.drawImage(_kennyImage, getWidth()/2, getWidth()/2, this);
-        g.drawImage(_zombieImage, getWidth()/2+24, getWidth()/2, this);
-        g.drawImage(_zombieImage, getWidth()/2+24, getWidth()/2+24, this);
-        g.drawImage(_zombieImage, getWidth()/2-24, getWidth()/2+24, this);
-        g.drawImage(_zombieImage, getWidth()/2-24, getWidth()/2, this);
-        g.drawImage(_zombieImage, getWidth()/2-24, getWidth()/2-24, this);
-        g.drawImage(_zombieImage, getWidth()/2, getWidth()/2-24, this);
-        g.drawImage(_zombieImage, getWidth()/2+24, getWidth()/2-24, this);
+        g.drawImage(_zombieImage, getWidth()/2, getHeight()/2+24, this);
+        g.drawImage(_kennyImage, getWidth()/2, getHeight()/2, this);
+        g.drawImage(_zombieImage, getWidth()/2+24, getHeight()/2, this);
+        g.drawImage(_zombieImage, getWidth()/2+24, getHeight()/2+24, this);
+        g.drawImage(_zombieImage, getWidth()/2-24, getHeight()/2+24, this);
+        g.drawImage(_zombieImage, getWidth()/2-24, getHeight()/2, this);
+        g.drawImage(_zombieImage, getWidth()/2-24, getHeight()/2-24, this);
+        g.drawImage(_zombieImage, getWidth()/2, getHeight()/2-24, this);
+        g.drawImage(_zombieImage, getWidth()/2+24, getHeight()/2-24, this);
     }
 }
