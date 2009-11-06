@@ -9,7 +9,7 @@ package zombiesurvivalsim;
  *
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
-public class Zombie implements Creature {
+public class Zombie extends Creature {
     @Override
     public Event getNextEvent() {
         return null;
