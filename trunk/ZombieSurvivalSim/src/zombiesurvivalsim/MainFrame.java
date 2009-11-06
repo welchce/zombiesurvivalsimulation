@@ -53,8 +53,11 @@ public class MainFrame extends JFrame {
     }
 
     private void createGUI() {
-        this.setLayout(new BorderLayout());
-        this.add(new JPanel(), BorderLayout.NORTH);
+        BorderLayout borderLayout = new BorderLayout();
+        borderLayout.setVgap(10);
+        borderLayout.setHgap(20);
+        this.setLayout(borderLayout);
+
         this.add(createRightPanel(), BorderLayout.EAST);
         this.add(_simulationPanel, BorderLayout.CENTER);
         this.add(createBottomPanel(), BorderLayout.SOUTH);
@@ -83,10 +86,10 @@ public class MainFrame extends JFrame {
           _fastForwardButton = new JButton(createImageIcon("images/FastForward.gif", "Fast Forward"));
         bottomPanel.add(_fastForwardButton,c);
         c.gridx = 3;
-        _addHumanButton = new JButton("+ Human");
+        _addHumanButton = new JButton("+", createImageIcon("images/Human.gif", "Add Human"));
         bottomPanel.add(_addHumanButton,c);
         c.gridx = 4;
-        _addZombieButton = new JButton("+ Zombie");
+        _addZombieButton = new JButton("+", createImageIcon("images/Zombie.gif", "Add Zombie"));
         bottomPanel.add(_addZombieButton,c);
         return bottomPanel;
     }
@@ -94,57 +97,66 @@ public class MainFrame extends JFrame {
     private JPanel createRightPanel() {
         JPanel topPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(10,20,0,20);
+        c.insets = new Insets(10,0,0,20);
         c.gridy = 0;
         topPanel.add(new JLabel("Zombies Killed"),c);
-        c.insets = new Insets(0,20,0,20);
+        c.insets = new Insets(0,0,0,20);
         c.gridy = 1;
         topPanel.add(_zombiesKilledLabel,c);
-        c.insets = new Insets(10,20,0,20);
+        c.insets = new Insets(10,0,0,20);
         c.gridy = 2;
         topPanel.add(new JLabel("Humans Killed"),c);
-        c.insets = new Insets(0,20,0,20);
+        c.insets = new Insets(0,0,0,20);
         c.gridy = 3;
         topPanel.add(_humansKilledLabel,c);
-        c.insets = new Insets(10,20,0,20);
+        c.insets = new Insets(10,0,0,20);
         c.gridy = 4;
         topPanel.add(new JLabel("Humans Saved"),c);
-        c.insets = new Insets(0,20,0,20);
+        c.insets = new Insets(0,0,0,20);
         c.gridy = 5;
         topPanel.add(_humansSavedLabel,c);
         return topPanel;
     }
+    
     private JPanel createLeftPanel() {
         GridBagConstraints c = new GridBagConstraints();
         JPanel leftPanel = new JPanel(new GridBagLayout());
-        c.insets = new Insets(10,20,10,0);
+        c.insets = new Insets(10,20,0,0);
         c.gridy = 0;
         leftPanel.add(new JLabel("# Zombies"),c);
-        c.insets = new Insets(0,20,0,10);
+        c.insets = new Insets(0,20,0,0);
         c.gridy = 1;
-        _numZombiesText.setPreferredSize(new Dimension(80,20));
+        _numZombiesText.setPreferredSize(new Dimension(50,20));
         leftPanel.add(_numZombiesText,c);
-        c.insets = new Insets(10,20,0,10);
+        c.insets = new Insets(10,20,0,0);
         c.gridy = 2;
         leftPanel.add(new JLabel("# Humans"),c);
-        c.insets = new Insets(0,20,0,10);
+        c.insets = new Insets(0,20,0,0);
         c.gridy = 3;
-        _numHumansText.setPreferredSize(new Dimension(80,20));
+        _numHumansText.setPreferredSize(new Dimension(50,20));
         leftPanel.add(_numHumansText,c);
-        c.insets = new Insets(10,20,0,10);
+        c.insets = new Insets(10,20,0,0);
         c.gridy = 4;
         leftPanel.add(new JLabel("Zombies Win"),c);
-        c.insets = new Insets(0,20,0,10);
+        c.insets = new Insets(0,20,0,0);
         c.gridy = 5;
-        _perZombiesWinText.setPreferredSize(new Dimension(80,20));
-        leftPanel.add(_perZombiesWinText,c);
-        c.insets = new Insets(10,20,0,10);
+        // This is ugly, someone consider fixing?
+        _perZombiesWinText.setPreferredSize(new Dimension(30,20));
+        JPanel zombieWinPer = new JPanel(new BorderLayout());
+        zombieWinPer.add(_perZombiesWinText, BorderLayout.WEST);
+        zombieWinPer.add(new JLabel("%", JLabel.LEFT),BorderLayout.CENTER);
+        leftPanel.add(zombieWinPer,c);
+        c.insets = new Insets(10,20,0,0);
         c.gridy = 6;
         leftPanel.add(new JLabel("Humans->Zombies"),c);
-        c.insets = new Insets(0,20,0,10);
+        c.insets = new Insets(0,20,0,0);
         c.gridy = 7;
-        _perHumansToZombiesText.setPreferredSize(new Dimension(80,20));
-        leftPanel.add(_perHumansToZombiesText,c);
+        // This is ugly, someone consider fixing?
+        _perHumansToZombiesText.setPreferredSize(new Dimension(30,20));
+        JPanel humanToZombiePer = new JPanel(new BorderLayout());
+        humanToZombiePer.add(_perHumansToZombiesText, BorderLayout.WEST);
+        humanToZombiePer.add(new JLabel("%", JLabel.LEFT),BorderLayout.CENTER);
+        leftPanel.add(humanToZombiePer,c);
         return leftPanel;
     }
 
