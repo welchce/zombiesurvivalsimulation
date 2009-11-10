@@ -20,6 +20,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.ArrayList;
+
 import java.net.URL;
 
 /**
@@ -36,15 +38,15 @@ public class MainFrame extends JFrame {
     JLabel _humansKilledLabel = new JLabel("0");
     JLabel _humansSavedLabel = new JLabel("0");
     JButton _playButton;
-    JButton _pauseButton;
     JButton _stepButton;
     JButton _fastForwardButton;
     JButton _addHumanButton;
     JButton _addZombieButton;
 
-    SimulationPanel _simulationPanel = new SimulationPanel();
     SimulationController _simulationController;
-
+    ArrayList<Creature> _creatures = new ArrayList();
+    SimulationPanel _simulationPanel = new SimulationPanel(_creatures);
+    
     public MainFrame() {
         this.setPreferredSize(new Dimension(800, 600));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -53,27 +55,23 @@ public class MainFrame extends JFrame {
         this.setTitle(WINDOW_TITLE);
         this.pack();
         this.setLocationRelativeTo(null);
-        _simulationController = new SimulationController(this);
+        _simulationController = new SimulationController(this, _simulationPanel, _creatures);
     }
 
     public void addPlayButtonHandler(ActionListener listener) {
         _playButton.addActionListener(listener);
     }
-
-    public void addPauseButtonHandler(ActionListener listener) {
-        _pauseButton.addActionListener(listener);
-    }
-
     public void addStepButtonHandler(ActionListener listener) {
         _stepButton.addActionListener(listener);
     }
-
     public void addFastForwardButtonHandler(ActionListener listener) {
         _fastForwardButton.addActionListener(listener);
     }
-
     public void addHumanButtonHandler(ActionListener listener) {
         _addHumanButton.addActionListener(listener);
+    }
+    public void addZombieButtonHandler(ActionListener listener) {
+        _addZombieButton.addActionListener(listener);
     }
 
     private void createGUI() {
