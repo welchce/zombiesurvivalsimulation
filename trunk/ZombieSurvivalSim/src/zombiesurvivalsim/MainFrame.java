@@ -17,6 +17,8 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import java.net.URL;
 
@@ -41,6 +43,7 @@ public class MainFrame extends JFrame {
     JButton _addZombieButton;
 
     SimulationPanel _simulationPanel = new SimulationPanel();
+    SimulationController _simulationController;
 
     public MainFrame() {
         this.setPreferredSize(new Dimension(800, 600));
@@ -50,6 +53,27 @@ public class MainFrame extends JFrame {
         this.setTitle(WINDOW_TITLE);
         this.pack();
         this.setLocationRelativeTo(null);
+        _simulationController = new SimulationController(this);
+    }
+
+    public void addPlayButtonHandler(ActionListener listener) {
+        _playButton.addActionListener(listener);
+    }
+
+    public void addPauseButtonHandler(ActionListener listener) {
+        _pauseButton.addActionListener(listener);
+    }
+
+    public void addStepButtonHandler(ActionListener listener) {
+        _stepButton.addActionListener(listener);
+    }
+
+    public void addFastForwardButtonHandler(ActionListener listener) {
+        _fastForwardButton.addActionListener(listener);
+    }
+
+    public void addHumanButtonHandler(ActionListener listener) {
+        _addHumanButton.addActionListener(listener);
     }
 
     private void createGUI() {
@@ -141,7 +165,7 @@ public class MainFrame extends JFrame {
         c.insets = new Insets(0,20,0,0);
         c.gridy = 5;
         // This is ugly, someone consider fixing?
-        _perZombiesWinText.setPreferredSize(new Dimension(30,20));
+        _perZombiesWinText.setPreferredSize(new Dimension(40,20));
         JPanel zombieWinPer = new JPanel(new BorderLayout());
         zombieWinPer.add(_perZombiesWinText, BorderLayout.WEST);
         zombieWinPer.add(new JLabel("%", JLabel.LEFT),BorderLayout.CENTER);
@@ -152,7 +176,7 @@ public class MainFrame extends JFrame {
         c.insets = new Insets(0,20,0,0);
         c.gridy = 7;
         // This is ugly, someone consider fixing?
-        _perHumansToZombiesText.setPreferredSize(new Dimension(30,20));
+        _perHumansToZombiesText.setPreferredSize(new Dimension(40,20));
         JPanel humanToZombiePer = new JPanel(new BorderLayout());
         humanToZombiePer.add(_perHumansToZombiesText, BorderLayout.WEST);
         humanToZombiePer.add(new JLabel("%", JLabel.LEFT),BorderLayout.CENTER);
