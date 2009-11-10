@@ -12,8 +12,13 @@ import java.awt.Point;
  */
 public abstract class Creature {
     private Point _position;
+
+    public Creature(Point position) {
+        _position = position;
+    }
     
     public abstract Event getNextEvent();
+    public abstract CreatureEnum getType();
     public Point getPosition() {
         return _position;
     }
