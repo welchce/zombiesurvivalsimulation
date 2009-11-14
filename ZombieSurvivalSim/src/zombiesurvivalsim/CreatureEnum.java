@@ -10,11 +10,8 @@ package zombiesurvivalsim;
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
 public enum CreatureEnum {
-
     HUMAN,
     ZOMBIE,
     HERO,
     COWARD
-
-
 }

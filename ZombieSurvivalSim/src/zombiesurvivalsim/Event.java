@@ -18,13 +18,13 @@ public class Event {
     //The priority of the item.
     int _priority;
     //the char[] array for the item.
-    Object _item = new Object();
+    ActionEntity _item;
 
     /*
      *Construtor for the item that assigns the passed values into the item array
      * and the priority.
      */
-    public Event(char item[], int priority) throws IndexOutOfBoundsException {
+    public Event(ActionEntity item, int priority) throws IndexOutOfBoundsException {
         if (priority > MAX_PRIORITY || priority < MIN_PRIORITY)
             throw new IndexOutOfBoundsException();
         _priority = priority;
@@ -34,7 +34,7 @@ public class Event {
      *
      * @return the item array.
      */
-    public Object getItem() { return _item; }
+    public ActionEntity getItem() { return _item; }
     /**
      *
      * @return the priority of the Event.

@@ -17,7 +17,6 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.ArrayList;
@@ -30,8 +29,9 @@ import java.net.URL;
  */
 public class MainFrame extends JFrame {
     static final String WINDOW_TITLE = "Zombie Human Survival Simulation";
-    JTextField _numZombiesText = new JTextField("0");
-    JTextField _numHumansText = new JTextField("0");
+    public static final Dimension SCREEN_SIZE = new Dimension(21,22);
+    JLabel _numZombiesLabel = new JLabel("0");
+    JLabel _numHumansLabel = new JLabel("0");
     JTextField _perZombiesWinText = new JTextField("0");
     JTextField _perHumansToZombiesText = new JTextField("0");
     JLabel _zombiesKilledLabel = new JLabel("0");
@@ -42,7 +42,7 @@ public class MainFrame extends JFrame {
     JButton _fastForwardButton;
     JButton _addHumanButton;
     JButton _addZombieButton;
-
+    
     SimulationController _simulationController;
     ArrayList<Creature> _creatures = new ArrayList();
     SimulationPanel _simulationPanel = new SimulationPanel(_creatures);
@@ -72,6 +72,14 @@ public class MainFrame extends JFrame {
     }
     public void addZombieButtonHandler(ActionListener listener) {
         _addZombieButton.addActionListener(listener);
+    }
+
+    public void updateNumHumans(int num) {
+        _numHumansLabel.setText(String.valueOf(num));
+    }
+
+    public void updateNumZombies(int num) {
+        _numZombiesLabel.setText(String.valueOf(num));
     }
 
     private void createGUI() {
@@ -148,15 +156,13 @@ public class MainFrame extends JFrame {
         leftPanel.add(new JLabel("# Zombies"),c);
         c.insets = new Insets(0,20,0,0);
         c.gridy = 1;
-        _numZombiesText.setPreferredSize(new Dimension(50,20));
-        leftPanel.add(_numZombiesText,c);
+        leftPanel.add(_numZombiesLabel,c);
         c.insets = new Insets(10,20,0,0);
         c.gridy = 2;
         leftPanel.add(new JLabel("# Humans"),c);
         c.insets = new Insets(0,20,0,0);
         c.gridy = 3;
-        _numHumansText.setPreferredSize(new Dimension(50,20));
-        leftPanel.add(_numHumansText,c);
+        leftPanel.add(_numHumansLabel,c);
         c.insets = new Insets(10,20,0,0);
         c.gridy = 4;
         leftPanel.add(new JLabel("Zombies Win"),c);
