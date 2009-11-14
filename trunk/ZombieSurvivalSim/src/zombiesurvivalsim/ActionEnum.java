@@ -10,6 +10,6 @@ package zombiesurvivalsim;
  * @author ryancummins
  */
 public enum ActionEnum {
-    Move,
-    Attack
+    MOVE,
+    ATTACK
 }

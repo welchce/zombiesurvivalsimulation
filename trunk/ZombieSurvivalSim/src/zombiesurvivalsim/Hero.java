@@ -5,6 +5,7 @@
 
 package zombiesurvivalsim;
 import java.awt.Point;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,7 +18,9 @@ public class Hero extends Creature {
     @Override
     public CreatureEnum getType() { return CreatureEnum.HERO; }
     @Override
-    public Event getNextEvent() {
-        return null;
+    public Event getNextEvent(ArrayList<Creature> creatures) {
+        Point newLoc = getRandomLocation(creatures);
+        ActionEntity humanAction = new ActionEntity(this, ActionEnum.MOVE, newLoc);
+        return new Event(humanAction,1);
     }
 }

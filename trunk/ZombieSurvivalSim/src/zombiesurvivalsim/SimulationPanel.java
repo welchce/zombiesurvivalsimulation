@@ -8,40 +8,55 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import java.util.ArrayList;
+import java.awt.Dimension;
 /**
  *
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
 public class SimulationPanel extends JPanel {
-    Image _kennyImage, _zombieImage;
+    Image _humanImage, _zombieImage, _cowardImage, _heroImage, _backgroundImage;
     ArrayList<Creature> _creatures;
+    Image _backbuffer;
 
     public SimulationPanel(ArrayList<Creature> creatures) {
         _creatures = creatures;
+        _backbuffer = new BufferedImage(MainFrame.SCREEN_SIZE.width*24, MainFrame.SCREEN_SIZE.height*24, BufferedImage.TYPE_INT_ARGB);
         try {
-            _kennyImage = ImageIO.read(this.getClass().getResource("images/Human.gif"));
+            _humanImage = ImageIO.read(this.getClass().getResource("images/Human.gif"));
             _zombieImage = ImageIO.read(this.getClass().getResource("images/Zombie.gif"));
+            _cowardImage = ImageIO.read(this.getClass().getResource("images/Coward.gif"));
+            _heroImage = ImageIO.read(this.getClass().getResource("images/Hero.gif"));
+            _backgroundImage = ImageIO.read(this.getClass().getResource("images/Background.png"));
         } catch (java.lang.Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
     @Override
     public void paint(Graphics g) {
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(0, 0, getWidth(), getHeight());
-
+        Graphics bg = _backbuffer.getGraphics();
+        //bg.fillRect(0, 0, MainFrame.SCREEN_SIZE.width*24, MainFrame.SCREEN_SIZE.height*24);
+        bg.drawImage(_backgroundImage, 0, 0, MainFrame.SCREEN_SIZE.width*24, MainFrame.SCREEN_SIZE.height*24, null);
         for (Creature creature : _creatures) {
             switch (creature.getType()) {
                 case ZOMBIE:
-                    g.drawImage(_zombieImage, creature.getPosition().x*24, creature.getPosition().y*24, null);
+                    bg.drawImage(_zombieImage, creature.getLocation().x*24, creature.getLocation().y*24, null);
                     break;
                 case HUMAN:
-                    g.drawImage(_kennyImage, creature.getPosition().x*24, creature.getPosition().y*24, null);
+                    bg.drawImage(_humanImage, creature.getLocation().x*24, creature.getLocation().y*24, null);
+                    break;
+                case COWARD:
+                    bg.drawImage(_cowardImage, creature.getLocation().x*24, creature.getLocation().y*24, null);
+                    break;
+                case HERO:
+                    bg.drawImage(_heroImage, creature.getLocation().x*24, creature.getLocation().y*24, null);
                     break;
             }
         }
+        //g.drawImage(_backbuffer, 0, 0, this);
+        g.drawImage(_backbuffer, 0, 0, getWidth(), getHeight(), this);
     }
 }

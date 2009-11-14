@@ -6,6 +6,7 @@
 package zombiesurvivalsim;
 
 import java.io.Serializable;
+import java.awt.Point;
 
 /**
  *
@@ -14,40 +15,26 @@ import java.io.Serializable;
 public class ActionEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Creature _creature;
     private ActionEnum _action;
-    private int[] _location = new int[2];
+    private Point _location;
+    private Creature _creature;
 
-    public ActionEntity(Creature creature, ActionEnum action, int[] location)
-    {
+    public ActionEntity(Creature creature, ActionEnum action, Point location) {
         _creature = creature;
         _action = action;
         _location = location;
     }
-
-    public Creature getCreature()
-    {
-        return _creature;
-    }
     
-    public int[] getLocation()
-    {
+    public Point getActionLocation() {
         return _location;
     }
     
-    public ActionEnum getAction()
-    {
+    public ActionEnum getAction() {
         return _action;
     }
 
-
-
-    public Creature getId() {
+    public Creature getCreature() {
         return _creature;
-    }
-
-    public void setId(Creature id) {
-        this._creature = id;
     }
 
     @Override
