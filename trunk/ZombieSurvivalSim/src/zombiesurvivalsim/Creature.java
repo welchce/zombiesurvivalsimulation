@@ -10,33 +10,72 @@ import java.util.Random;
 
 
 /**
- *
+ * Creature represents a creature in our simulation.  It takes up a space on
+ * the board and has knowledge of its next location.
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
 public abstract class Creature {
     private Point _location;
     private Point _nextLocation;
 
+    /**
+     * Default Constructor
+     * @param location - the inital location of the creature.
+     */
     public Creature(Point location) {
         setLocation(location);
         setNextLocation(location);
     }
 
+    /**
+     * this function returns the next event associated with the creature.
+     * @param creatures -
+     * @return -
+     */
     public abstract Event getNextEvent(ArrayList<Creature> creatures);
+
+    /**
+     *
+     * @return - the type of Creature.
+     */
     public abstract CreatureEnum getType();
+
+    /**
+     *
+     * @param newLocation - the new location of the Creature.
+     */
     public void setLocation(Point newLocation) {
         _location = newLocation;
     }
+
+    /**
+     *
+     * @param newNextLocation
+     */
     protected void setNextLocation(Point newNextLocation) {
         _nextLocation = newNextLocation;
     }
+    /**
+     *
+     * @return
+     */
     public Point getLocation() {
         return _location;
     }
+
+    /**
+     *
+     * @return
+     */
     public Point getNextLocation() {
         return _nextLocation;
     }
 
+    /**
+     *
+     * @param creatures
+     * @return
+     */
     protected Point getRandomLocation(ArrayList<Creature> creatures) {
         Random randy = new Random();
         Point newLoc = new Point(getLocation());
@@ -78,6 +117,11 @@ public abstract class Creature {
         return newLoc;
     }
 
+    /**
+     *
+     * @param creatures
+     * @return
+     */
     protected ArrayList<Point> getNeighborLocations(ArrayList<Creature> creatures) {
         ArrayList<Point> neighborLocations = new ArrayList();
         for (Creature neighbor : creatures) {
