@@ -1,6 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * ActionEntity
+ * November 15, 2009
  */
 
 package zombiesurvivalsim;
@@ -9,30 +9,50 @@ import java.io.Serializable;
 import java.awt.Point;
 
 /**
- *
+ * An ActionEntity is a set that contains all of the information nessisary
+ * to perform an action tied to an Eevent.
  * @author ryancummins
  */
 public class ActionEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
+
     private ActionEnum _action;
     private Point _location;
     private Creature _creature;
 
+    /**
+     * Default Constructor.
+     * @param creature - the creature associated with the action.
+     * @param action - the action being performed
+     * @param location - the location involved in the action.
+     */
     public ActionEntity(Creature creature, ActionEnum action, Point location) {
         _creature = creature;
         _action = action;
         _location = location;
     }
-    
+
+    /**
+     * getActionLocation() returns the location of the action.
+     * @return - the location of the associated action.
+     */
     public Point getActionLocation() {
         return _location;
     }
-    
+
+    /**
+     * getAction() returns the action.
+     * @return - the action being performed.
+     */
     public ActionEnum getAction() {
         return _action;
     }
 
+    /**
+     * getCreature() returns the creature performing the action.
+     * @return - the creature.
+     */
     public Creature getCreature() {
         return _creature;
     }
@@ -46,7 +66,7 @@ public class ActionEntity implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        
         if (!(object instanceof ActionEntity)) {
             return false;
         }
@@ -57,6 +77,11 @@ public class ActionEntity implements Serializable {
         return true;
     }
 
+    /**
+     * returns a string that represents to action being performed.
+     * @return - a string representation of the action and associated
+     * information.
+     */
     @Override
     public String toString() {
         return "" + _creature + "]";
