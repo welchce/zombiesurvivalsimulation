@@ -7,6 +7,7 @@ package zombiesurvivalsim;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Point;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -22,74 +23,79 @@ public class SimulationController {
     EventQueue _simulationQueue = new EventQueue();
     int _numHumans = 0;
     int _numZombies = 0;
+    boolean _alreadyPlaying = false;
 
     public SimulationController(MainFrame mainFrame, SimulationPanel simulationPanel,
                                 ArrayList<Creature> creatures) {
         _mainFrame = mainFrame;
         _creatures = creatures;
         _simulationPanel = simulationPanel;
-        
+
         _mainFrame.addFastForwardButtonHandler(new FastForwardButtonHandler());
         _mainFrame.addHumanButtonHandler(new AddHumanButtonHandler());
-        _mainFrame.addPlayButtonHandler(new PlayButtonHandler());
+        _mainFrame.addPlayPauseButtonHandler(new PlayPauseButtonHandler());
         _mainFrame.addStepButtonHandler(new StepButtonHandler());
-        _mainFrame.addZombieButtonHandler(new ZombieButtonHandler());
+        _mainFrame.addZombieButtonHandler(new AddZombieButtonHandler());
     }
 
     class FastForwardButtonHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            while(!_simulationQueue.isEmpty()) {
+            do {
                 step();
-            }
-            step();
+            } while(!_simulationQueue.isEmpty());
         }
     }
 
     class AddHumanButtonHandler implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
-            Point humanPos = getRandomUnusedLocation();
-            Random randy = new Random();
+        public void actionPerformed(ActionEvent ae) {
+            try {
+                Point humanPos = getRandomUnusedLocation();
+                Random randy = new Random();
+                switch (randy.nextInt(3)) {
+                    case 0:
+                        Human newHuman = new Human(humanPos);
+                        _creatures.add(newHuman);
+                        break;
+                    case 1:
+                        Hero newHero = new Hero(humanPos);
+                        _creatures.add(newHero);
+                        break;
+                    case 2:
+                        Coward newCoward = new Coward(humanPos);
+                        _creatures.add(newCoward);
+                        break;
+                }
+                _simulationPanel.repaint();
+                _mainFrame.updateNumHumans(++_numHumans);
 
-            switch (randy.nextInt(3)) {
-                case 0:
-                    Human newHuman = new Human(humanPos);
-                    _creatures.add(newHuman);
-                    break;
-                case 1:
-                    Hero newHero = new Hero(humanPos);
-                    _creatures.add(newHero);
-                    break;
-                case 2:
-                    Coward newCoward = new Coward(humanPos);
-                    _creatures.add(newCoward);
-                    break;
+                System.out.println("Add new human ("+humanPos.x+", "+humanPos.y+")");
+            } catch(Exception e) {
+                JOptionPane.showMessageDialog(null, "The map is full, you cannot add any more creatures",
+                                              "Map is full", JOptionPane.ERROR_MESSAGE);
             }
-            
-            _simulationPanel.repaint();
-            _mainFrame.updateNumHumans(++_numHumans);
-            
-            System.out.println("Add new human ("+humanPos.x+", "+humanPos.y+")");
         }
     }
 
-
-    class PlayButtonHandler implements ActionListener {
+    class PlayPauseButtonHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent ae) {
-            new Thread() {
-                public void run() {
-                    while (true) {
-                        step();
-                        try {
-                            Thread.sleep(20);
-                        } catch (Exception e) {
-                            
+                if (!_alreadyPlaying) {
+                    _alreadyPlaying = true;
+                    new Thread() {
+                        public void run() {
+                            while (_alreadyPlaying) {
+                                step();
+                                try { Thread.sleep(20);
+                                } catch (Exception e) { }
+                            }
                         }
-                    }
+                    }.start();
+                } else {
+                    _alreadyPlaying = false;
                 }
-            }.start();
+            _mainFrame.togglePlayPause(_alreadyPlaying);
         }
     }
 
@@ -100,50 +106,64 @@ public class SimulationController {
         }
     }
 
-    class ZombieButtonHandler implements ActionListener {
+    class AddZombieButtonHandler implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
-            Point zombiePos = getRandomUnusedLocation();
-            Zombie newZombie = new Zombie(zombiePos);
-            _creatures.add(newZombie);
-            _simulationPanel.repaint();
-            _mainFrame.updateNumZombies(++_numZombies);
-            System.out.println("Add new zombie ("+zombiePos.x+", "+zombiePos.y+")");
+        public void actionPerformed(ActionEvent ae) {
+            try {
+                Point zombiePos = getRandomUnusedLocation();
+                Zombie newZombie = new Zombie(zombiePos);
+                _creatures.add(newZombie);
+                _simulationPanel.repaint();
+                _mainFrame.updateNumZombies(++_numZombies);
+                System.out.println("Add new zombie ("+zombiePos.x+", "+zombiePos.y+")");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "The map is full, you cannot add any more creatures",
+                                              "Map is full", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
     private void step() {
-        if (!_simulationQueue.isEmpty()) {
-            Event stepEvent = _simulationQueue.dequeue();
-            ActionEntity stepAction = stepEvent.getItem();
-            Creature stepCreature = stepAction.getCreature();
-            
-            switch (stepAction.getAction()) {
-                case MOVE:
-                    Point moveLoc = stepAction.getActionLocation();
-                    if (moveLoc.x > -1 && moveLoc.x < MainFrame.SCREEN_SIZE.width &&
-                        moveLoc.y > -1 && moveLoc.y < MainFrame.SCREEN_SIZE.height)
-                            stepCreature.setLocation(moveLoc);
-                    break;
-                case ATTACK:
-                    break;
-            }
-            _simulationPanel.repaint();
+        if (!_creatures.isEmpty()) {
+            if (!_simulationQueue.isEmpty()) {
+                Event stepEvent = _simulationQueue.dequeue();
+                ActionEntity stepAction = stepEvent.getItem();
+                Creature stepCreature = stepAction.getCreature();
 
-        } else {
-            System.out.println("Repopulating queue...");
-            for (Creature creature : _creatures) {
-                _simulationQueue.enqueue(creature.getNextEvent(_creatures));
+                switch (stepAction.getAction()) {
+                    case MOVE:
+                        Point moveLoc = stepAction.getActionLocation();
+                        if (moveLoc.x > -1 && moveLoc.x < MainFrame.SCREEN_SIZE.width &&
+                            moveLoc.y > -1 && moveLoc.y < MainFrame.SCREEN_SIZE.height)
+                                stepCreature.setLocation(moveLoc);
+                        break;
+                    case ATTACK:
+                        break;
+                }
+                _simulationPanel.repaint();
+
+            } else {
+                System.out.println("Repopulating queue...");
+                for (Creature creature : _creatures) {
+                    _simulationQueue.enqueue(creature.getNextEvent(_creatures));
+                }
+                step();
             }
-            step();
+        } else {
+            JOptionPane.showMessageDialog(null, "There are no creatures to move. Click + creature to add a human or zombie",
+                                          "No Creatures", JOptionPane.ERROR_MESSAGE);
+            _alreadyPlaying = false;
+            _mainFrame.togglePlayPause(_alreadyPlaying);
         }
     }
 
     // Loops forever if all spaces are filled
-    private Point getRandomUnusedLocation() {
+    private Point getRandomUnusedLocation() throws Exception {
         boolean creatureInSpot;
         int x, y;
         Random randy = new Random();
+        if (_creatures.size() >= (MainFrame.SCREEN_SIZE.width*MainFrame.SCREEN_SIZE.height))
+            throw new Exception();
         do {
             creatureInSpot = false;
             x = randy.nextInt(MainFrame.SCREEN_SIZE.width);

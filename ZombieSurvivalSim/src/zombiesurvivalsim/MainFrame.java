@@ -37,20 +37,24 @@ public class MainFrame extends JFrame {
     JLabel _zombiesKilledLabel = new JLabel("0");
     JLabel _humansKilledLabel = new JLabel("0");
     JLabel _humansSavedLabel = new JLabel("0");
-    JButton _playButton;
+    JButton _playPauseButton;
     JButton _stepButton;
     JButton _fastForwardButton;
     JButton _addHumanButton;
     JButton _addZombieButton;
+
+    ImageIcon _playImageIcon, _pauseImageIcon;
     
     SimulationController _simulationController;
     ArrayList<Creature> _creatures = new ArrayList();
     SimulationPanel _simulationPanel = new SimulationPanel(_creatures);
-    
+
     public MainFrame() {
         this.setPreferredSize(new Dimension(800, 600));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setResizable(true);
+        _playImageIcon = createImageIcon("images/Play.gif", "Play");
+        _pauseImageIcon = createImageIcon("images/Pause.gif", "Pause");
         this.createGUI();
         this.setTitle(WINDOW_TITLE);
         this.pack();
@@ -58,8 +62,8 @@ public class MainFrame extends JFrame {
         _simulationController = new SimulationController(this, _simulationPanel, _creatures);
     }
 
-    public void addPlayButtonHandler(ActionListener listener) {
-        _playButton.addActionListener(listener);
+    public void addPlayPauseButtonHandler(ActionListener listener) {
+        _playPauseButton.addActionListener(listener);
     }
     public void addStepButtonHandler(ActionListener listener) {
         _stepButton.addActionListener(listener);
@@ -73,13 +77,27 @@ public class MainFrame extends JFrame {
     public void addZombieButtonHandler(ActionListener listener) {
         _addZombieButton.addActionListener(listener);
     }
-
     public void updateNumHumans(int num) {
         _numHumansLabel.setText(String.valueOf(num));
     }
-
     public void updateNumZombies(int num) {
         _numZombiesLabel.setText(String.valueOf(num));
+    }
+
+    public void togglePlayPause(boolean play) {
+        if (play) {
+            _playPauseButton.setIcon(_pauseImageIcon);
+            _stepButton.setEnabled(false);
+            _fastForwardButton.setEnabled(false);
+            _addHumanButton.setEnabled(false);
+            _addZombieButton.setEnabled(false);
+        } else {
+            _playPauseButton.setIcon(_playImageIcon);
+            _stepButton.setEnabled(true);
+            _fastForwardButton.setEnabled(true);
+            _addHumanButton.setEnabled(true);
+            _addZombieButton.setEnabled(true);
+        }
     }
 
     private void createGUI() {
@@ -107,8 +125,8 @@ public class MainFrame extends JFrame {
         JPanel bottomPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
-        _playButton = new JButton(createImageIcon("images/Play.gif", "Play"));
-        bottomPanel.add(_playButton,c);
+        _playPauseButton = new JButton(_playImageIcon);
+        bottomPanel.add(_playPauseButton,c);
         c.gridx = 1;
          _stepButton = new JButton(createImageIcon("images/Step.gif", "Step"));
         bottomPanel.add(_stepButton,c);
