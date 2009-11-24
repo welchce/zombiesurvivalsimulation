@@ -35,9 +35,9 @@ public class Zombie extends Creature {
      * @return - the next event.
      */
     @Override
-    public Event getNextEvent(ArrayList<Creature> creatures) {
-        Point newLoc = getRandomLocation(creatures);
-        ActionEntity humanAction = new ActionEntity(this, ActionEnum.MOVE, newLoc);
-        return new Event(humanAction,2);
+    public Event getNextEvent(ArrayList<Creature> neighbors, ArrayList<SafeZone> safeZones) {
+        Creature newZombie = new Zombie(getRandomLocation(neighbors));
+        ActionEntity zombieAction = new ActionEntity(this, newZombie, ActionEnum.MOVE);
+        return new Event(zombieAction,1);
     }
 }

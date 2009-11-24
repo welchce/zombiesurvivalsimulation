@@ -29,7 +29,7 @@ import java.net.URL;
  */
 public class MainFrame extends JFrame {
     static final String WINDOW_TITLE = "Zombie Human Survival Simulation";
-    public static final Dimension SCREEN_SIZE = new Dimension(21,22);
+    public static final Dimension SCREEN_SIZE = new Dimension(20,20);
     JLabel _numZombiesLabel = new JLabel("0");
     JLabel _numHumansLabel = new JLabel("0");
     JTextField _perZombiesWinText = new JTextField("0");
@@ -46,8 +46,9 @@ public class MainFrame extends JFrame {
     ImageIcon _playImageIcon, _pauseImageIcon;
     
     SimulationController _simulationController;
-    ArrayList<Creature> _creatures = new ArrayList();
-    SimulationPanel _simulationPanel = new SimulationPanel(_creatures);
+    ArrayList<Creature> _creatures = new ArrayList<Creature>();
+    ArrayList<SafeZone> _safeZones = new ArrayList<SafeZone>();
+    SimulationPanel _simulationPanel = new SimulationPanel(_creatures, _safeZones);
 
     public MainFrame() {
         this.setPreferredSize(new Dimension(800, 600));
@@ -59,7 +60,8 @@ public class MainFrame extends JFrame {
         this.setTitle(WINDOW_TITLE);
         this.pack();
         this.setLocationRelativeTo(null);
-        _simulationController = new SimulationController(this, _simulationPanel, _creatures);
+        _simulationController = new SimulationController(this, _simulationPanel,
+                                                         _creatures, _safeZones);
     }
 
     public void addPlayPauseButtonHandler(ActionListener listener) {

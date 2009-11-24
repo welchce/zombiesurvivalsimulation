@@ -18,12 +18,14 @@ import java.awt.Dimension;
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
 public class SimulationPanel extends JPanel {
-    Image _humanImage, _zombieImage, _cowardImage, _heroImage, _backgroundImage;
+    Image _humanImage, _zombieImage, _cowardImage, _heroImage, _backgroundImage, _safezoneImage;
     ArrayList<Creature> _creatures;
+    ArrayList<SafeZone> _safezones;
     Image _backbuffer;
 
-    public SimulationPanel(ArrayList<Creature> creatures) {
+    public SimulationPanel(ArrayList<Creature> creatures, ArrayList<SafeZone> safezones) {
         _creatures = creatures;
+        _safezones = safezones;
         _backbuffer = new BufferedImage(MainFrame.SCREEN_SIZE.width*24, MainFrame.SCREEN_SIZE.height*24, BufferedImage.TYPE_INT_ARGB);
         try {
             _humanImage = ImageIO.read(this.getClass().getResource("images/Human.gif"));
@@ -31,6 +33,7 @@ public class SimulationPanel extends JPanel {
             _cowardImage = ImageIO.read(this.getClass().getResource("images/Coward.gif"));
             _heroImage = ImageIO.read(this.getClass().getResource("images/Hero.gif"));
             _backgroundImage = ImageIO.read(this.getClass().getResource("images/Background.png"));
+            _safezoneImage = ImageIO.read(this.getClass().getResource("images/Safezone.gif"));
         } catch (java.lang.Exception e) {
             System.err.println(e.getMessage());
         }
@@ -40,6 +43,10 @@ public class SimulationPanel extends JPanel {
         Graphics bg = _backbuffer.getGraphics();
         //bg.fillRect(0, 0, MainFrame.SCREEN_SIZE.width*24, MainFrame.SCREEN_SIZE.height*24);
         bg.drawImage(_backgroundImage, 0, 0, MainFrame.SCREEN_SIZE.width*24, MainFrame.SCREEN_SIZE.height*24, null);
+        for (SafeZone safeZone : _safezones) {
+            bg.drawImage(_safezoneImage, safeZone.getLocation().x*24, safeZone.getLocation().y*24, null);
+        }
+
         for (Creature creature : _creatures) {
             switch (creature.getType()) {
                 case ZOMBIE:
