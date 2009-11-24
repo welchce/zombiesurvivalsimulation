@@ -75,6 +75,8 @@ public class EventQueue {
         }
     }
 
+    public ArrayList<Event> getEvents() { return _items; }
+
     /**
      * The getSize function returns the size of the Priority Queue.
      */

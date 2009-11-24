@@ -36,9 +36,9 @@ public class Coward extends Creature {
      * @return
      */
     @Override
-    public Event getNextEvent(ArrayList<Creature> creatures) {
-        Point newLoc = getRandomLocation(creatures);
-        ActionEntity humanAction = new ActionEntity(this, ActionEnum.MOVE, newLoc);
-        return new Event(humanAction,1);
+    public Event getNextEvent(ArrayList<Creature> neighbors, ArrayList<SafeZone> safeZones) {
+        Creature newCoward = new Coward(moveTowardsSafezone(neighbors, safeZones));
+        ActionEntity cowardAction = new ActionEntity(this, newCoward, ActionEnum.MOVE);
+        return new Event(cowardAction,1);
     }
 }

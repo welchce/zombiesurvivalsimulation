@@ -3,6 +3,8 @@
  * and open the template in the editor.
  */
 
+// 3% of the board safe zones
+
 package zombiesurvivalsim;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -19,6 +21,7 @@ import java.util.Random;
 public class SimulationController {
     MainFrame _mainFrame;
     ArrayList<Creature> _creatures;
+    ArrayList<SafeZone> _safeZones;
     SimulationPanel _simulationPanel;
     EventQueue _simulationQueue = new EventQueue();
     int _numHumans = 0;
@@ -26,9 +29,10 @@ public class SimulationController {
     boolean _alreadyPlaying = false;
 
     public SimulationController(MainFrame mainFrame, SimulationPanel simulationPanel,
-                                ArrayList<Creature> creatures) {
+                                ArrayList<Creature> creatures, ArrayList<SafeZone> safeZones) {
         _mainFrame = mainFrame;
         _creatures = creatures;
+        _safeZones = safeZones;
         _simulationPanel = simulationPanel;
 
         _mainFrame.addFastForwardButtonHandler(new FastForwardButtonHandler());
@@ -36,6 +40,8 @@ public class SimulationController {
         _mainFrame.addPlayPauseButtonHandler(new PlayPauseButtonHandler());
         _mainFrame.addStepButtonHandler(new StepButtonHandler());
         _mainFrame.addZombieButtonHandler(new AddZombieButtonHandler());
+
+        this.initSafeZones();
     }
 
     class FastForwardButtonHandler implements ActionListener {
@@ -81,20 +87,20 @@ public class SimulationController {
     class PlayPauseButtonHandler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent ae) {
-                if (!_alreadyPlaying) {
-                    _alreadyPlaying = true;
-                    new Thread() {
-                        public void run() {
-                            while (_alreadyPlaying) {
-                                step();
-                                try { Thread.sleep(20);
-                                } catch (Exception e) { }
-                            }
+            if (!_alreadyPlaying) {
+                _alreadyPlaying = true;
+                new Thread() {
+                    public void run() {
+                        while (_alreadyPlaying) {
+                            step();
+                            try { Thread.sleep(10);
+                            } catch (Exception e) { }
                         }
-                    }.start();
-                } else {
-                    _alreadyPlaying = false;
-                }
+                    }
+                }.start();
+            } else {
+                _alreadyPlaying = false;
+            }
             _mainFrame.togglePlayPause(_alreadyPlaying);
         }
     }
@@ -124,45 +130,64 @@ public class SimulationController {
     }
 
     private void step() {
-        if (!_creatures.isEmpty()) {
-            if (!_simulationQueue.isEmpty()) {
-                Event stepEvent = _simulationQueue.dequeue();
-                ActionEntity stepAction = stepEvent.getItem();
-                Creature stepCreature = stepAction.getCreature();
+        if (_simulationQueue.isEmpty()) repopulateQueue();
+        ActionEntity curItem = _simulationQueue.dequeue().getItem();
+        Creature oldCreature = curItem.getOldCreature();
+        Creature newCreature = curItem.getNewCreature();
+        _creatures.set(_creatures.indexOf(oldCreature), newCreature);
+        _simulationPanel.repaint();
+    }
 
-                switch (stepAction.getAction()) {
-                    case MOVE:
-                        Point moveLoc = stepAction.getActionLocation();
-                        if (moveLoc.x > -1 && moveLoc.x < MainFrame.SCREEN_SIZE.width &&
-                            moveLoc.y > -1 && moveLoc.y < MainFrame.SCREEN_SIZE.height)
-                                stepCreature.setLocation(moveLoc);
-                        break;
-                    case ATTACK:
-                        break;
-                }
-                _simulationPanel.repaint();
+    private void initSafeZones() {
+        Random randy = new Random();
+        boolean safezoneInSpot;
+        for (int i=0; i<5; i++) {
+            int x;
+            int y;
+            do {
+                x = randy.nextInt(MainFrame.SCREEN_SIZE.width);
+                y = randy.nextInt(MainFrame.SCREEN_SIZE.height);
 
-            } else {
-                System.out.println("Repopulating queue...");
-                for (Creature creature : _creatures) {
-                    _simulationQueue.enqueue(creature.getNextEvent(_creatures));
+                safezoneInSpot = false;
+                for (SafeZone safezone : _safeZones) {
+                    if (safezone.getLocation().x == x && safezone.getLocation().y == y) {
+                        safezoneInSpot = true;
+                        break;
+                    }
                 }
-                step();
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "There are no creatures to move. Click + creature to add a human or zombie",
-                                          "No Creatures", JOptionPane.ERROR_MESSAGE);
-            _alreadyPlaying = false;
-            _mainFrame.togglePlayPause(_alreadyPlaying);
+            } while (safezoneInSpot);
+            _safeZones.add(new SafeZone(new Point(x,y)));
         }
     }
 
-    // Loops forever if all spaces are filled
+    private void repopulateQueue() {
+        for(Creature creature : _creatures) {
+            ArrayList<Creature> neighbors = getNeighbors(creature);
+            _simulationQueue.enqueue(creature.getNextEvent(neighbors, _safeZones));
+        }
+    }
+
+    private ArrayList<Creature> getNeighbors(Creature creature) {
+        ArrayList<Creature> neighbors = new ArrayList<Creature>();
+        for (Creature neighbor : _creatures) {
+            if (neighbor.getLocation().distance(creature.getLocation()) <= 1)
+                neighbors.add(neighbor);
+        }
+
+        for (Event event : _simulationQueue.getEvents()) {
+            Creature futureNeighbor = event.getItem().getNewCreature();
+            Creature oldNeighbor = event.getItem().getOldCreature();
+            if (futureNeighbor.getLocation().distance(creature.getLocation()) <= 1 && !oldNeighbor.getLocation().equals(futureNeighbor.getLocation()))
+                neighbors.add(futureNeighbor);
+        }
+        return neighbors;
+    }
+    
     private Point getRandomUnusedLocation() throws Exception {
         boolean creatureInSpot;
         int x, y;
         Random randy = new Random();
-        if (_creatures.size() >= (MainFrame.SCREEN_SIZE.width*MainFrame.SCREEN_SIZE.height))
+        if (_creatures.size() >= (MainFrame.SCREEN_SIZE.width*MainFrame.SCREEN_SIZE.height - _safeZones.size()))
             throw new Exception();
         do {
             creatureInSpot = false;
@@ -174,6 +199,12 @@ public class SimulationController {
                     break;
                 }
             }
+           for (SafeZone safezone : _safeZones) {
+                if (safezone.getLocation().x == x && safezone.getLocation().y == y) {
+                    creatureInSpot = true;
+                    break;
+                }
+           }
         } while (creatureInSpot);
         return new Point(x,y);
     }

@@ -19,7 +19,8 @@ public class ActionEntity implements Serializable {
 
     private ActionEnum _action;
     private Point _location;
-    private Creature _creature;
+    private Creature _oldCreature;
+    private Creature _newCreature;
 
     /**
      * Default Constructor.
@@ -27,18 +28,10 @@ public class ActionEntity implements Serializable {
      * @param action - the action being performed
      * @param location - the location involved in the action.
      */
-    public ActionEntity(Creature creature, ActionEnum action, Point location) {
-        _creature = creature;
+    public ActionEntity(Creature oldCreature, Creature newCreature, ActionEnum action) {
+        _oldCreature = oldCreature;
+        _newCreature = newCreature;
         _action = action;
-        _location = location;
-    }
-
-    /**
-     * getActionLocation() returns the location of the action.
-     * @return - the location of the associated action.
-     */
-    public Point getActionLocation() {
-        return _location;
     }
 
     /**
@@ -50,41 +43,18 @@ public class ActionEntity implements Serializable {
     }
 
     /**
-     * getCreature() returns the creature performing the action.
+     * getOldCreature() returns the creature performing the action.
      * @return - the creature.
      */
-    public Creature getCreature() {
-        return _creature;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (_creature != null ? _creature.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        
-        if (!(object instanceof ActionEntity)) {
-            return false;
-        }
-        ActionEntity other = (ActionEntity) object;
-        if ((this._creature == null && other._creature != null) || (this._creature != null && !this._creature.equals(other._creature))) {
-            return false;
-        }
-        return true;
+    public Creature getOldCreature() {
+        return _oldCreature;
     }
 
     /**
-     * returns a string that represents to action being performed.
-     * @return - a string representation of the action and associated
-     * information.
+     * getNewCreature() returns the new creature generated from the action.
+     * @return - the creature.
      */
-    @Override
-    public String toString() {
-        return "" + _creature + "]";
+    public Creature getNewCreature() {
+        return _newCreature;
     }
-
 }

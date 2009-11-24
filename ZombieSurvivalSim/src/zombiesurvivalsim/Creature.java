@@ -15,8 +15,7 @@ import java.util.Random;
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
 public abstract class Creature {
-    private Point _location;
-    private Point _nextLocation;
+    private Point _location, _newLocation;
 
     /**
      * Default Constructor
@@ -24,7 +23,7 @@ public abstract class Creature {
      */
     public Creature(Point location) {
         setLocation(location);
-        setNextLocation(location);
+        setNewLocation(location);
     }
 
     /**
@@ -32,7 +31,7 @@ public abstract class Creature {
      * @param creatures -
      * @return -
      */
-    public abstract Event getNextEvent(ArrayList<Creature> creatures);
+    public abstract Event getNextEvent(ArrayList<Creature> neighbors, ArrayList<SafeZone> safeZones);
 
     /**
      *
@@ -48,13 +47,14 @@ public abstract class Creature {
         _location = newLocation;
     }
 
-    /**
-     *
-     * @param newNextLocation
-     */
-    protected void setNextLocation(Point newNextLocation) {
-        _nextLocation = newNextLocation;
+    public void setNewLocation(Point newLocation) {
+        _newLocation = newLocation;
     }
+
+    public Point getNewLocation() {
+        return _newLocation;
+    }
+
     /**
      *
      * @return
@@ -63,12 +63,8 @@ public abstract class Creature {
         return _location;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Point getNextLocation() {
-        return _nextLocation;
+    protected Point moveTowardsSafezone(ArrayList<Creature> neighbors, ArrayList<SafeZone> safeZones) {
+        return null;
     }
 
     /**
@@ -76,13 +72,23 @@ public abstract class Creature {
      * @param creatures
      * @return
      */
-    protected Point getRandomLocation(ArrayList<Creature> creatures) {
+    protected Point getRandomLocation(ArrayList<Creature> neighbors) {
         Random randy = new Random();
         Point newLoc = new Point(getLocation());
+        int possibleMoves = 4-(neighbors.size());
 
-        ArrayList<Point> neighbors = getNeighborLocations(creatures);
-        if (neighbors.size() < 4) {
+        if (getLocation().y+1 >= MainFrame.SCREEN_SIZE.height)
+            possibleMoves--;
+        if (getLocation().y-1 < 0)
+            possibleMoves--;
+        if (getLocation().x+1 >= MainFrame.SCREEN_SIZE.width)
+            possibleMoves--;
+        if (getLocation().x-1 < 0)
+            possibleMoves--;
+        System.out.println("Possible moves: " + possibleMoves);
+        if (possibleMoves > 0) {
             boolean creatureThere;
+            boolean offMap;
             do {
                 newLoc = new Point(getLocation());
                 switch (randy.nextInt(4)) {
@@ -100,41 +106,21 @@ public abstract class Creature {
                         break;
                 }
                 creatureThere = false;
+                offMap = false;
 
-                System.out.println("Move To Location: " + newLoc);
-                for (Point neighborLocation : neighbors) {
-                    //System.out.println("Neighbor position: " + neighbor.getLocation());
-                    if (neighborLocation.x == newLoc.x && neighborLocation.y == newLoc.y) {
+                for (Creature neighbor : neighbors) {
+                    if (neighbor.getLocation().equals(newLoc) || neighbor.getNewLocation().equals(newLoc)) {
                         creatureThere = true;
-                        //System.out.println("There is a creature at new location.");
                         break;
                     }
                 }
-            } while (creatureThere);
-            setNextLocation(newLoc);
-        }
-        
-        return newLoc;
-    }
 
-    /**
-     *
-     * @param creatures
-     * @return
-     */
-    protected ArrayList<Point> getNeighborLocations(ArrayList<Creature> creatures) {
-        ArrayList<Point> neighborLocations = new ArrayList();
-        for (Creature neighbor : creatures) {
-            if (neighbor != this) {
-                if (neighbor.getLocation().distance(this.getLocation()) <= 1) {
-                    neighborLocations.add(neighbor.getLocation());
-                }
-                if (!neighbor.getLocation().equals(neighbor.getNextLocation()) &&
-                    neighbor.getNextLocation().distance(this.getLocation()) <= 1) {
-                    neighborLocations.add(neighbor.getNextLocation());
-                }
-            }
+                if (newLoc.x >= MainFrame.SCREEN_SIZE.width || newLoc.x < 0) offMap = true;
+                if (newLoc.y >= MainFrame.SCREEN_SIZE.height || newLoc.y < 0) offMap = true;
+
+            } while (creatureThere || offMap);
         }
-        return neighborLocations;
+        setNewLocation(newLoc);
+        return newLoc;
     }
 }

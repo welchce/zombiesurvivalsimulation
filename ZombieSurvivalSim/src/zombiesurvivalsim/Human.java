@@ -35,9 +35,9 @@ public class Human extends Creature {
      * @return - the next event.
      */
     @Override
-    public Event getNextEvent(ArrayList<Creature> creatures) {
-        Point newLoc = getRandomLocation(creatures);
-        ActionEntity humanAction = new ActionEntity(this, ActionEnum.MOVE, newLoc);
+    public Event getNextEvent(ArrayList<Creature> neighbors, ArrayList<SafeZone> safeZones) {
+        Creature newHuman = new Human(moveTowardsSafezone(neighbors, safeZones));
+        ActionEntity humanAction = new ActionEntity(this, newHuman, ActionEnum.MOVE);
         return new Event(humanAction,1);
     }
 }
