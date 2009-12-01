@@ -12,6 +12,12 @@ import java.util.ArrayList;
 public class EventQueue {
     ArrayList<Event> _items = new ArrayList();
 
+    public void print() {
+        for (int i=0; i<_items.size(); i++) {
+            System.out.println(_items.get(i).toString());
+        }
+    }
+
     /**
      * The enqueue function takes a given Event item and places it in
      * the last position in the array and then bubbles the item up the Priority
