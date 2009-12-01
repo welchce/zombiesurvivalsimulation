@@ -40,6 +40,4 @@ public class Event {
      * @return the priority of the Event.
      */
     public int getPriority() { return _priority; }
-
-
 }
