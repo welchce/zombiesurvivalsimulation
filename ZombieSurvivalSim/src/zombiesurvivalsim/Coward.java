@@ -6,6 +6,7 @@
 package zombiesurvivalsim;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * A Coward is a type of Creature that attempts to get to the nearest Safe zone
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  * space.
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
-public class Coward extends Creature {
+public class Coward extends Human {
 
     /**
      * Default Constructor
@@ -28,7 +29,7 @@ public class Coward extends Creature {
      * @return - the Coward creature enum.
      */
     @Override
-    public CreatureEnum getType() { return CreatureEnum.COWARD; }
+    public EntityEnum getType() { return EntityEnum.COWARD; }
 
     /**
      * gets hte next event associated with the creature.
@@ -36,9 +37,9 @@ public class Coward extends Creature {
      * @return
      */
     @Override
-    public Event getNextEvent(ArrayList<Creature> neighbors, ArrayList<SafeZone> safeZones) {
-        Creature newCoward = new Coward(moveTowardsSafezone(neighbors, safeZones));
-        ActionEntity cowardAction = new ActionEntity(this, newCoward, ActionEnum.MOVE);
-        return new Event(cowardAction,1);
+    public Event getNextEvent(ArrayList<Entity> board, EventQueue simulationQueue) {
+        Point newLocation = getRandomMove(board, simulationQueue);
+        ActionEntity action = new ActionEntity(ActionEnum.MOVE, this, newLocation);
+        return new Event(action, 1);
     }
 }

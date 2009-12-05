@@ -11,5 +11,6 @@ package zombiesurvivalsim;
  */
 public enum ActionEnum {
     MOVE,
-    ATTACK
+    ATTACK,
+    SAVED
 }

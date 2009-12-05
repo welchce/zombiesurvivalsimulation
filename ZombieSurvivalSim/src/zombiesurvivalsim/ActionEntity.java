@@ -5,7 +5,6 @@
 
 package zombiesurvivalsim;
 
-import java.io.Serializable;
 import java.awt.Point;
 
 /**
@@ -13,14 +12,11 @@ import java.awt.Point;
  * to perform an action tied to an Eevent.
  * @author ryancummins
  */
-public class ActionEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class ActionEntity {
 
     private ActionEnum _action;
     private Point _location;
-    private Creature _oldCreature;
-    private Creature _newCreature;
+    private Entity _entity;
 
     /**
      * Default Constructor.
@@ -28,10 +24,10 @@ public class ActionEntity implements Serializable {
      * @param action - the action being performed
      * @param location - the location involved in the action.
      */
-    public ActionEntity(Creature oldCreature, Creature newCreature, ActionEnum action) {
-        _oldCreature = oldCreature;
-        _newCreature = newCreature;
+    public ActionEntity(ActionEnum action, Entity entity, Point location) {
         _action = action;
+        _entity = entity;
+        _location = location;
     }
 
     /**
@@ -42,19 +38,11 @@ public class ActionEntity implements Serializable {
         return _action;
     }
 
-    /**
-     * getOldCreature() returns the creature performing the action.
-     * @return - the creature.
-     */
-    public Creature getOldCreature() {
-        return _oldCreature;
+    public Point getLocation() {
+        return _location;
     }
 
-    /**
-     * getNewCreature() returns the new creature generated from the action.
-     * @return - the creature.
-     */
-    public Creature getNewCreature() {
-        return _newCreature;
+    public Entity getEntity() {
+        return _entity;
     }
 }
