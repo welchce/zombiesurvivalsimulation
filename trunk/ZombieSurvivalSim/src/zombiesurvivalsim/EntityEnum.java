@@ -9,9 +9,10 @@ package zombiesurvivalsim;
  * An Enum to identify the different types of creatures in the simulation.
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
-public enum CreatureEnum {
+public enum EntityEnum {
     HUMAN,
     ZOMBIE,
     HERO,
-    COWARD
+    COWARD,
+    SAFEZONE
 }

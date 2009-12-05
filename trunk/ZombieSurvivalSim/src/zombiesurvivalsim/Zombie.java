@@ -6,13 +6,14 @@
 package zombiesurvivalsim;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * A Zombie is a type of Creature. It wanders around randomly, and will attack
  * nearby non-Zombies and Safe zones.
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
-public class Zombie extends Creature {
+public class Zombie extends Entity {
 
     /**
      * Default Constructor
@@ -24,10 +25,10 @@ public class Zombie extends Creature {
 
     /**
      * returns the Creature type Zombie.
-     * @return - CreatureEnum.ZOMBIE
+     * @return - EntityEnum.ZOMBIE
      */
     @Override
-    public CreatureEnum getType() { return CreatureEnum.ZOMBIE; }
+    public EntityEnum getType() { return EntityEnum.ZOMBIE; }
 
     /**
      * gets the next event associated with the Zombie.
@@ -35,9 +36,9 @@ public class Zombie extends Creature {
      * @return - the next event.
      */
     @Override
-    public Event getNextEvent(ArrayList<Creature> neighbors, ArrayList<SafeZone> safeZones) {
-        Creature newZombie = new Zombie(getRandomLocation(neighbors));
-        ActionEntity zombieAction = new ActionEntity(this, newZombie, ActionEnum.MOVE);
-        return new Event(zombieAction,1);
+    public Event getNextEvent(ArrayList<Entity> board, EventQueue simulationQueue) {
+        Point newLocation = getRandomMove(board, simulationQueue);
+        ActionEntity action = new ActionEntity(ActionEnum.MOVE, this, newLocation);
+        return new Event(action, 2);
     }
 }

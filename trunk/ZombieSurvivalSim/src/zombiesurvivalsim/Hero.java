@@ -6,13 +6,14 @@
 package zombiesurvivalsim;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * A Hero is a type of Creature. It attempts to get ot the nearest safe zone
  * but will attack zombies that it encounters in the process.
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
-public class Hero extends Creature {
+public class Hero extends Human {
 
     /**
      * Default Constructor
@@ -24,10 +25,10 @@ public class Hero extends Creature {
 
     /**
      * returns the Hero Creature type.
-     * @return - CreatureEnum.Hero
+     * @return - EntityEnum.Hero
      */
     @Override
-    public CreatureEnum getType() { return CreatureEnum.HERO; }
+    public EntityEnum getType() { return EntityEnum.HERO; }
 
     /**
      * gets the next event associated with the Hero.
@@ -35,9 +36,9 @@ public class Hero extends Creature {
      * @return - the next event.
      */
     @Override
-    public Event getNextEvent(ArrayList<Creature> neighbors, ArrayList<SafeZone> safeZones) {
-        Creature newHero = new Hero(moveTowardsSafezone(neighbors, safeZones));
-        ActionEntity heroAction = new ActionEntity(this, newHero, ActionEnum.MOVE);
-        return new Event(heroAction,1);
+    public Event getNextEvent(ArrayList<Entity> board, EventQueue simulationQueue) {
+        Point newLocation = getRandomMove(board, simulationQueue);
+        ActionEntity action = new ActionEntity(ActionEnum.MOVE, this, newLocation);
+        return new Event(action, 1);
     }
 }
