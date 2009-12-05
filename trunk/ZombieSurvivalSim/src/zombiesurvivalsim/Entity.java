@@ -54,59 +54,6 @@ public abstract class Entity {
         return images.get(getType());
     }
 
-    protected Point getRandomMove(ArrayList<Entity> board, EventQueue simulationQueue) {
-        boolean invalidMove;
-        int numMoves = 4;
-        HashMap<Point,Entity> neighbors = new HashMap<Point,Entity>();
-        if (getLocation().x+1 >= MainFrame.SCREEN_SIZE.width || getLocation().x-1 < 0)
-            numMoves -= 1;
-        if (getLocation().y+1 >= MainFrame.SCREEN_SIZE.height || getLocation().y-1 < 0)
-            numMoves -= 1;
-        for (Event event : simulationQueue.getEvents()) {
-            Point curLocation = event.getItem().getLocation();
-            if (curLocation.distance(getLocation()) == 1) {
-                neighbors.put(curLocation, event.getItem().getEntity());
-                numMoves -= 1;
-            }
-        }
-         for (Entity piece : board) {
-            if (piece.getLocation().distance(getLocation()) == 1 && !neighbors.containsValue(piece)
-                && piece != this) {
-                neighbors.put(piece.getLocation(), piece);
-                numMoves -= 1;
-            }
-        }
-        Point newLocation = new Point(getLocation());
-        if (numMoves > 0) {
-            do {
-                Random randy = new Random();
-                newLocation = new Point(getLocation());
-                switch (randy.nextInt(4)) {
-                    case 0:
-                        newLocation.x = newLocation.x+1;
-                        break;
-                    case 1:
-                        newLocation.x = newLocation.x-1;
-                        break;
-                    case 2:
-                        newLocation.y = newLocation.y+1;
-                        break;
-                    case 3:
-                        newLocation.y = newLocation.y-1;
-                        break;
-                }
-                invalidMove = false;
-
-                if (newLocation.x >= MainFrame.SCREEN_SIZE.width || newLocation.x < 0 ||
-                    newLocation.y >= MainFrame.SCREEN_SIZE.height || newLocation.y < 0)
-                    invalidMove = true;
-                else if (neighbors.containsKey(newLocation)) invalidMove = true;
-            } while (invalidMove);
-        }
-
-        return newLocation;
-    }
-
     public abstract EntityEnum getType();
-    public abstract Event getNextEvent(ArrayList<Entity> board, EventQueue simulationQueue);
+    public abstract Event getNextEvent(ArrayList<Entity> board);
 }

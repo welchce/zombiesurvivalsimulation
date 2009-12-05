@@ -15,7 +15,6 @@ import java.awt.Point;
 public class ActionEntity {
 
     private ActionEnum _action;
-    private Point _location;
     private Entity _entity;
 
     /**
@@ -24,10 +23,9 @@ public class ActionEntity {
      * @param action - the action being performed
      * @param location - the location involved in the action.
      */
-    public ActionEntity(ActionEnum action, Entity entity, Point location) {
+    public ActionEntity(ActionEnum action, Entity entity) {
         _action = action;
         _entity = entity;
-        _location = location;
     }
 
     /**
@@ -36,10 +34,6 @@ public class ActionEntity {
      */
     public ActionEnum getAction() {
         return _action;
-    }
-
-    public Point getLocation() {
-        return _location;
     }
 
     public Entity getEntity() {

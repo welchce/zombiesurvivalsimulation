@@ -10,7 +10,8 @@ package zombiesurvivalsim;
  * @author ryancummins
  */
 public enum ActionEnum {
-    MOVE,
-    ATTACK,
-    SAVED
+    MOVE_TO_SAFE,
+    HUMAN_SAVED,
+    HUNT_HUMANS,
+    BLOCK_SAFEZONE
 }

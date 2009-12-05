@@ -30,16 +30,4 @@ public class Coward extends Human {
      */
     @Override
     public EntityEnum getType() { return EntityEnum.COWARD; }
-
-    /**
-     * gets hte next event associated with the creature.
-     * @param creatures
-     * @return
-     */
-    @Override
-    public Event getNextEvent(ArrayList<Entity> board, EventQueue simulationQueue) {
-        Point newLocation = getRandomMove(board, simulationQueue);
-        ActionEntity action = new ActionEntity(ActionEnum.MOVE, this, newLocation);
-        return new Event(action, 1);
-    }
 }
