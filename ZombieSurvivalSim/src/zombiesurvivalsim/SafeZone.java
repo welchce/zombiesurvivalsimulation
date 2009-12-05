@@ -18,7 +18,7 @@ public class SafeZone extends Entity {
     @Override
     public EntityEnum getType() { return EntityEnum.SAFEZONE; }
     @Override
-    public Event getNextEvent(ArrayList<Entity> board, EventQueue simulationQueue) {
+    public Event getNextEvent(ArrayList<Entity> board) {
         return null;
     }
 }

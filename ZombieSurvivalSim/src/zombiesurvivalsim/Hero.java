@@ -29,16 +29,4 @@ public class Hero extends Human {
      */
     @Override
     public EntityEnum getType() { return EntityEnum.HERO; }
-
-    /**
-     * gets the next event associated with the Hero.
-     * @param creatures
-     * @return - the next event.
-     */
-    @Override
-    public Event getNextEvent(ArrayList<Entity> board, EventQueue simulationQueue) {
-        Point newLocation = getRandomMove(board, simulationQueue);
-        ActionEntity action = new ActionEntity(ActionEnum.MOVE, this, newLocation);
-        return new Event(action, 1);
-    }
 }
