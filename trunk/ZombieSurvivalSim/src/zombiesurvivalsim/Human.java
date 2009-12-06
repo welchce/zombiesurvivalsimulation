@@ -6,6 +6,7 @@
 package zombiesurvivalsim;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * A human is a type of Creature.  It will attempt to get the nearest safe zone
@@ -30,17 +31,28 @@ public class Human extends Entity {
     public EntityEnum getType() { return EntityEnum.HUMAN; }
 
     /**
-     * gets the events associated with the Human.
+     * gets the event associated with the Human.
      * @return - the events.
      */
     @Override
     public Event getNextEvent(ArrayList<Entity> board) {
+        Random randy = new Random();
         Event event=new Event(new ActionEntity(ActionEnum.MOVE_TO_SAFE, this), 3);
 
         for (Entity piece : board) {
-            if (piece.getType() == EntityEnum.SAFEZONE) {
-                if (piece.getLocation().distance(getLocation()) == 1) {
-                    event=new Event(new ActionEntity(ActionEnum.HUMAN_SAVED, this), 1);
+            if (piece.getLocation().distance(getLocation()) == 1) {
+                if (piece.getType() == EntityEnum.SAFEZONE) {
+                    event=new Event(new ActionEntity(ActionEnum.HUMAN_SAVED, this), 2);
+                    break;
+                }
+
+                if (piece.getType() == EntityEnum.ZOMBIE) {
+                    if (randy.nextInt(2) == 1) {
+                        event=new Event(new ActionEntity(ActionEnum.INVITE_NEIGHBORS, this), 2);
+                    } else if (randy.nextInt(2) == 1) {
+                        event=new Event(new ActionEntity(ActionEnum.ATTACK_ZOMBIE, this), 2);
+                    }
+                    break;
                 }
             }
         }

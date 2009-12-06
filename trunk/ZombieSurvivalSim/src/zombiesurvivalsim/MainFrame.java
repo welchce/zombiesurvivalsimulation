@@ -34,11 +34,12 @@ public class MainFrame extends JFrame {
     public static final Dimension SCREEN_SIZE = new Dimension(20, 21);
     private JLabel _numZombiesLabel = new JLabel("0");
     private JLabel _numHumansLabel = new JLabel("0");
-    private JTextField _perZombiesWinText = new JTextField("0");
-    private JTextField _perHumansToZombiesText = new JTextField("0");
+    private JTextField _perZombiesWinText = new JTextField("50");
+    private JTextField _perHumansToZombiesText = new JTextField("50");
     private JLabel _zombiesKilledLabel = new JLabel("0");
     private JLabel _humansKilledLabel = new JLabel("0");
     private JLabel _humansSavedLabel = new JLabel("0");
+    private JLabel _humansConvertedLabel = new JLabel("0");
     private JButton _playPauseButton;
     private JButton _stepButton;
     private JButton _fastForwardButton;
@@ -62,6 +63,7 @@ public class MainFrame extends JFrame {
         _simulationController = new SimulationController(this, _simulationPanel,_board);
         _simulationPanel.addMouseMotionListener(_simulationController);
         _simulationPanel.addMouseListener(_simulationController);
+        _simulationPanel.requestFocus();
     }
 
     public void addPlayPauseButtonHandler(ActionListener listener) {
@@ -84,6 +86,20 @@ public class MainFrame extends JFrame {
         _addZombieButton.addActionListener(listener);
     }
 
+    public int getZombieConvertPer() {
+        int zombieHumanPer = Integer.valueOf(_perHumansToZombiesText.getText());
+        if (zombieHumanPer > 100) zombieHumanPer = 100;
+        if (zombieHumanPer < 0) zombieHumanPer = 0;
+        return zombieHumanPer;
+    }
+
+    public int getZombiesWinPer() {
+        int zombieWinPer = Integer.valueOf(_perZombiesWinText.getText());
+        if (zombieWinPer > 100) zombieWinPer = 100;
+        if (zombieWinPer < 0) zombieWinPer = 0;
+        return zombieWinPer;
+    }
+
     public void updateNumHumans(int num) {
         _numHumansLabel.setText(String.valueOf(num));
     }
@@ -94,6 +110,10 @@ public class MainFrame extends JFrame {
 
     public void updateHumansSavedLabel(int num) {
         _humansSavedLabel.setText(String.valueOf(num));
+    }
+
+    public void updateHumansConvertedLabel(int num) {
+        _humansConvertedLabel.setText(String.valueOf(num));
     }
 
     public void updateZombiesKilledLabel(int num) {
@@ -187,6 +207,12 @@ public class MainFrame extends JFrame {
         c.insets = new Insets(0, 0, 0, 20);
         c.gridy = 5;
         topPanel.add(_humansSavedLabel, c);
+        c.insets = new Insets(10, 0, 0, 20);
+        c.gridy = 6;
+        topPanel.add(new JLabel("Humans Converted"), c);
+        c.insets = new Insets(0, 0, 0, 20);
+        c.gridy = 7;
+        topPanel.add(_humansConvertedLabel, c);
         return topPanel;
     }
 

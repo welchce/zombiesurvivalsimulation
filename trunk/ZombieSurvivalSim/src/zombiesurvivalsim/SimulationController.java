@@ -19,7 +19,6 @@ import java.awt.Color;
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
 public class SimulationController implements MouseMotionListener, MouseListener {
-
     MainFrame _mainFrame;
     ArrayList<Entity> _board;
     SimulationPanel _simulationPanel;
@@ -28,6 +27,8 @@ public class SimulationController implements MouseMotionListener, MouseListener 
     int _numZombies = 0;
     int _numHumansSaved = 0;
     int _numHumansKilled = 0;
+    int _numZombiesKilled = 0;
+    int _numHumansConverted = 0;
     boolean _alreadyPlaying = false;
     boolean _addHumanSelected = true;
 
@@ -100,10 +101,6 @@ public class SimulationController implements MouseMotionListener, MouseListener 
     private void addCreature(Point addPos) {
         _simulationPanel.setSelection(addPos, Color.CYAN);
         if (validLocation(addPos)) {
-            while (!_simulationQueue.isEmpty()) {
-                _simulationQueue.dequeue();
-            }
-            repopulateQueue();
             if (_addHumanSelected) {
                 Random randy = new Random();
                 switch (randy.nextInt(3)) {
@@ -125,6 +122,11 @@ public class SimulationController implements MouseMotionListener, MouseListener 
                 _board.add(new Zombie(addPos));
                 _mainFrame.updateNumZombies(++_numZombies);
             }
+
+            while (!_simulationQueue.isEmpty()) {
+                _simulationQueue.dequeue();
+            }
+            repopulateQueue();
         }
         _simulationPanel.repaint();
     }
@@ -215,25 +217,75 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         if (!_simulationQueue.isEmpty()) {
             Event stepEvent = _simulationQueue.dequeue();
             Entity stepEntity = stepEvent.getItem().getEntity();
-            ActionEnum stepAction = stepEvent.getItem().getAction();
-            switch (stepAction) {
-                case BLOCK_SAFEZONE:
-                    blockSafeZone(stepEntity);
-                    break;
-                case HUMAN_SAVED:
-                    moveSaved(stepEntity);
-                    break;
-                case HUNT_HUMANS:
-                    huntHumans(stepEntity);
-                    break;
-                case MOVE_TO_SAFE:
-                    moveTowardsSafeZone(stepEntity);
-                    break;
+            if (_board.contains(stepEntity)) {
+                ActionEnum stepAction = stepEvent.getItem().getAction();
+                switch (stepAction) {
+                    case BLOCK_SAFEZONE:
+                        blockSafeZone(stepEntity);
+                        break;
+                    case HUMAN_SAVED:
+                        moveSaved(stepEntity);
+                        break;
+                    case ATTACK_HUMAN:
+                        attackNearbyHuman(stepEntity);
+                        break;
+                    case MOVE_RANDOMLY:
+                        moveRandomly(stepEntity);
+                        break;
+                    case MOVE_TO_SAFE:
+                        moveTowardsEntity(stepEntity, getClosestEntity(stepEntity, EntityEnum.SAFEZONE));
+                        break;
+                    case CONVERT_HUMAN:
+                        convertNearbyHuman(stepEntity);
+                        break;
+                    case ATTACK_ZOMBIE:
+                        attackNearbyZombie(stepEntity);
+                        break;
+                    case RUSH_ZOMBIE:
+                        moveTowardsEntity(stepEntity, getClosestEntity(stepEntity, EntityEnum.ZOMBIE));
+                        break;
+                    case RUSH_HUMAN:
+                        moveTowardsEntity(stepEntity, getClosestHuman(stepEntity));
+                        break;
+                    case INVITE_NEIGHBORS:
+                        inviteNeighbors(stepEntity);
+                        break;
+                }
+            }
+        }
+        _simulationPanel.repaint();
+    }
+
+    private void blockSafeZone(Entity source) {
+        Entity targetZone = null;
+        for (Entity safezone : _board) {
+            if (safezone.getType() == EntityEnum.SAFEZONE &&
+                source.getLocation().distance(safezone.getLocation()) == 1) {
+                targetZone = safezone;
+                break;
+            }
+        }
+        if (targetZone != null) {
+            int zombiesAroundZone=0;
+            for (Entity zombie : _board) {
+                if (zombie.getType() == EntityEnum.ZOMBIE &&
+                    targetZone.getLocation().distance(zombie.getLocation()) == 1) {
+                    if (++zombiesAroundZone >= 4) {
+                        _board.remove(targetZone);
+                        break;
+                    }
+                }
             }
         }
     }
 
-    private void blockSafeZone(Entity source) {
+    private void inviteNeighbors(Entity source) {
+        for (Entity neighbor : _board) {
+            if (neighbor.getLocation().distance(source.getLocation()) == 2) {
+                Entity targetZombie = getClosestEntity(source, EntityEnum.ZOMBIE);
+                moveTowardsEntity(neighbor, targetZombie);
+            }
+        }
     }
 
     private void moveSaved(Entity source) {
@@ -243,27 +295,60 @@ public class SimulationController implements MouseMotionListener, MouseListener 
                     _board.remove(source);
                     _mainFrame.updateHumansSavedLabel(++_numHumansSaved);
                     _mainFrame.updateNumHumans(--_numHumans);
-                    _simulationPanel.repaint();
                     return;
                 }
             }
         }
     }
 
-    private void huntHumans(Entity source) {
-        for (Entity piece : _board) {
-            if (piece.getLocation().distance(source.getLocation()) == 1 &&
-                    (piece.getType() == EntityEnum.HUMAN ||
-                    piece.getType() == EntityEnum.COWARD ||
-                    piece.getType() == EntityEnum.HERO)) {
-
-                _board.remove(piece);
-                _mainFrame.updateHumansKilledLabel(++_numHumansKilled);
+    private void convertNearbyHuman(Entity source) {
+        Random randy = new Random();
+        if (randy.nextInt(100) < _mainFrame.getZombieConvertPer()) {
+            Entity nearbyHuman = getClosestHuman(source);
+            if (nearbyHuman != null) {
+                _board.remove(nearbyHuman);
+                _board.add(new Zombie(nearbyHuman.getLocation()));
+                _mainFrame.updateHumansConvertedLabel(++_numHumansConverted);
                 _mainFrame.updateNumHumans(--_numHumans);
-                return;
+                _mainFrame.updateNumZombies(++_numZombies);
             }
         }
-        moveRandomly(source);
+    }
+
+    private void attackNearbyZombie(Entity source) {
+        Random randy = new Random();
+        if (randy.nextInt(100) > _mainFrame.getZombiesWinPer()) {
+            Entity nearbyZombie = getClosestEntity(source, EntityEnum.ZOMBIE);
+            if (nearbyZombie.getLocation().distance(source.getLocation()) == 1) {
+                _board.remove(nearbyZombie);
+                _mainFrame.updateZombiesKilledLabel(++_numZombiesKilled);
+                _mainFrame.updateNumHumans(--_numZombies);
+            }
+        }
+    }
+
+    private void attackNearbyHuman(Entity source) {
+        Random randy = new Random();
+        if (randy.nextInt(100) < _mainFrame.getZombiesWinPer()) {
+            Entity nearbyHuman = getClosestHuman(source);
+            if (nearbyHuman != null) {
+                _board.remove(nearbyHuman);
+                _mainFrame.updateHumansKilledLabel(++_numHumansKilled);
+                _mainFrame.updateNumHumans(--_numHumans);
+            }
+        }
+    }
+
+    private Entity getClosestHuman(Entity source) {
+        for (Entity nearbyHuman : _board) {
+            if (nearbyHuman.getLocation().distance(source.getLocation()) == 1 &&
+                    (nearbyHuman.getType() == EntityEnum.HUMAN ||
+                    nearbyHuman.getType() == EntityEnum.COWARD ||
+                    nearbyHuman.getType() == EntityEnum.HERO)) {
+                return nearbyHuman;
+            }
+        }
+        return null;
     }
 
     private void moveRandomly(Entity source) {
@@ -289,42 +374,44 @@ public class SimulationController implements MouseMotionListener, MouseListener 
                 }
             } while (!validLocation(newLocation));
             source.setLocation(newLocation);
-            _simulationPanel.repaint();
         }
     }
 
-    private void moveTowardsSafeZone(Entity source) {
+    private void moveTowardsEntity(Entity source, Entity destination) {
         Point newLocation;
-        Entity closeZone = null;
-        for (Entity safeZone : _board) {
-            if (safeZone.getType() == EntityEnum.SAFEZONE) {
-                if (closeZone == null) {
-                    closeZone = safeZone;
-                }
-                if (safeZone.getLocation().distance(source.getLocation()) <
-                        closeZone.getLocation().distance(source.getLocation())) {
-                    closeZone = safeZone;
-                }
-            }
-        }
-        if (getPossibleMoves(source) > 0) {
+        if (getPossibleMoves(source) > 0 && destination != null) {
             newLocation = new Point(source.getLocation());
-            if (closeZone.getLocation().x > newLocation.x) {
+            if (destination.getLocation().x > newLocation.x) {
                 newLocation.x++;
-            } else if (closeZone.getLocation().x < newLocation.x) {
+            } else if (destination.getLocation().x < newLocation.x) {
                 newLocation.x--;
-            } else if (closeZone.getLocation().y > newLocation.y) {
+            } else if (destination.getLocation().y > newLocation.y) {
                 newLocation.y++;
-            } else if (closeZone.getLocation().y < newLocation.y) {
+            } else if (destination.getLocation().y < newLocation.y) {
                 newLocation.y--;
             }
             if (validLocation(newLocation)) {
                 source.setLocation(newLocation);
-                _simulationPanel.repaint();
             } else {
                 moveRandomly(source);
             }
         }
+    }
+
+    private Entity getClosestEntity(Entity source, EntityEnum searchType) {
+        Entity closeEntity = null;
+        for (Entity piece : _board) {
+            if (piece.getType() == searchType) {
+                if (closeEntity == null) {
+                    closeEntity = piece;
+                }
+                if (piece.getLocation().distance(source.getLocation()) <
+                        closeEntity.getLocation().distance(source.getLocation())) {
+                    closeEntity = piece;
+                }
+            }
+        }
+        return closeEntity;
     }
 
     private int getPossibleMoves(Entity creature) {
@@ -357,12 +444,12 @@ public class SimulationController implements MouseMotionListener, MouseListener 
             Point randLoc;
             do {
                 badLoc = false;
-                x = randy.nextInt(MainFrame.SCREEN_SIZE.width);
-                y = randy.nextInt(MainFrame.SCREEN_SIZE.height);
+                x = randy.nextInt(MainFrame.SCREEN_SIZE.width-2)+1;
+                y = randy.nextInt(MainFrame.SCREEN_SIZE.height-2)+1;
                 randLoc = new Point(x, y);
 
                 for (Entity piece : _board) {
-                    if (piece.getLocation().equals(randLoc)) {
+                    if (piece.getLocation().distance(randLoc) <= 1) {
                         badLoc = true;
                         break;
                     }
