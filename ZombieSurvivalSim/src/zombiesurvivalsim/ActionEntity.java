@@ -5,8 +5,6 @@
 
 package zombiesurvivalsim;
 
-import java.awt.Point;
-
 /**
  * An ActionEntity is a set that contains all of the information nessisary
  * to perform an action tied to an Eevent.
