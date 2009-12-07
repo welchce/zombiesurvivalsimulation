@@ -56,4 +56,13 @@ public abstract class Entity {
 
     public abstract EntityEnum getType();
     public abstract Event getNextEvent(ArrayList<Entity> board);
+
+    public String toString()
+    {
+        String entityText = "";
+
+        entityText = "\nCreature Type: " + getType() + "  Location: " + _location;
+
+        return entityText;
+    }
 }

@@ -40,4 +40,14 @@ public class Event {
      * @return the priority of the Event.
      */
     public int getPriority() { return _priority; }
+
+
+    public String toString()
+    {
+        String eventText = "";
+
+        eventText = "\n Event Priority: " + _priority + _item.toString();
+
+        return eventText;
+    }
 }

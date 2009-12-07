@@ -20,6 +20,7 @@ import java.awt.Color;
  */
 public class SimulationController implements MouseMotionListener, MouseListener {
     MainFrame _mainFrame;
+    Logger _logger;
     ArrayList<Entity> _board;
     SimulationPanel _simulationPanel;
     EventQueue _simulationQueue = new EventQueue();
@@ -37,6 +38,8 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         _mainFrame = mainFrame;
         _board = board;
         _simulationPanel = simulationPanel;
+
+        _logger = new Logger();
 
         _mainFrame.addFastForwardButtonHandler(new FastForwardButtonHandler());
         _mainFrame.addHumanButtonHandler(new AddHumanButtonHandler());
@@ -217,6 +220,14 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         if (!_simulationQueue.isEmpty()) {
             Event stepEvent = _simulationQueue.dequeue();
             Entity stepEntity = stepEvent.getItem().getEntity();
+            try
+            {
+                _logger.write(stepEvent);
+            }
+            catch (java.io.IOException ex)
+            {
+                //ignore fails to write.
+            }
             if (_board.contains(stepEntity)) {
                 ActionEnum stepAction = stepEvent.getItem().getAction();
                 switch (stepAction) {

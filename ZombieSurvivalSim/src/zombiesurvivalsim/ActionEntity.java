@@ -37,4 +37,13 @@ public class ActionEntity {
     public Entity getEntity() {
         return _entity;
     }
+
+    public String toString()
+    {
+        String actionText = "";
+
+        actionText = "\nAction: " + _action + _entity.toString();
+
+        return actionText;
+    }
 }
