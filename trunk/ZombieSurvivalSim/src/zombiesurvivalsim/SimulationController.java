@@ -32,6 +32,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
     int _numHumansConverted = 0;
     boolean _alreadyPlaying = false;
     boolean _addHumanSelected = true;
+    private boolean retardButtonsDisabled = false;
 
     public SimulationController(MainFrame mainFrame, SimulationPanel simulationPanel,
             ArrayList<Entity> board) {
@@ -46,6 +47,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         _mainFrame.addPlayPauseButtonHandler(new PlayPauseButtonHandler());
         _mainFrame.addStepButtonHandler(new StepButtonHandler());
         _mainFrame.addZombieButtonHandler(new AddZombieButtonHandler());
+        _mainFrame.addResetButtonHandler(new ResetButtonHandler());
 
         this.generateSafeZones();
     }
@@ -103,7 +105,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
     private void addCreature(Point addPos) {
         _simulationPanel.setSelection(addPos, Color.CYAN);
-        if (validLocation(addPos)) {
+        if (validLocation(addPos) && !retardButtonsDisabled) {
             if (_addHumanSelected) {
                 Random randy = new Random();
                 switch (randy.nextInt(3)) {
@@ -155,6 +157,8 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         public void actionPerformed(ActionEvent e) {
             do {
                 step();
+                _mainFrame.disableRetardButtons();
+                retardButtonsDisabled = true;
             } while (!_simulationQueue.isEmpty());
         }
     }
@@ -163,6 +167,8 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
         @Override
         public void actionPerformed(ActionEvent ae) {
+            _mainFrame.disableRetardButtons();
+            retardButtonsDisabled = true;
             if (!_alreadyPlaying) {
                 _alreadyPlaying = true;
                 _simulationPanel.hideSelection();
@@ -193,6 +199,8 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            _mainFrame.disableRetardButtons();
+            retardButtonsDisabled = true;
             step();
         }
     }
@@ -210,6 +218,26 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         @Override
         public void actionPerformed(ActionEvent ae) {
             _addHumanSelected = true;
+        }
+    }
+
+    class ResetButtonHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            _board.removeAll(_board);
+            while (!_simulationQueue.isEmpty())
+                _simulationQueue.dequeue();
+            generateSafeZones();
+            _mainFrame.updateNumHumans(0);
+            _mainFrame.updateNumZombies(0);
+            _mainFrame.updateHumansConvertedLabel(0);
+            _mainFrame.updateHumansKilledLabel(0);
+            _mainFrame.updateZombiesKilledLabel(0);
+            _mainFrame.updateHumansSavedLabel(0);
+            _simulationPanel.repaint();
+            _mainFrame.enableRetardButtons();
+            retardButtonsDisabled = false;
         }
     }
 

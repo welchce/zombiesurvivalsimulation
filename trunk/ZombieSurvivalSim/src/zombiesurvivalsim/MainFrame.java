@@ -43,12 +43,14 @@ public class MainFrame extends JFrame {
     private JButton _playPauseButton;
     private JButton _stepButton;
     private JButton _fastForwardButton;
+    private JButton _resetButton;
     private JRadioButton _addHumanButton;
     private JRadioButton _addZombieButton;
     private ImageIcon _playImageIcon,  _pauseImageIcon;
     private SimulationController _simulationController;
     private ArrayList<Entity> _board = new ArrayList<Entity>();
     private SimulationPanel _simulationPanel = new SimulationPanel(_board);
+
 
     public MainFrame() {
         this.setPreferredSize(new Dimension(800, 600));
@@ -84,6 +86,10 @@ public class MainFrame extends JFrame {
 
     public void addZombieButtonHandler(ActionListener listener) {
         _addZombieButton.addActionListener(listener);
+    }
+
+    public void addResetButtonHandler(ActionListener listener) {
+        _resetButton.addActionListener(listener);
     }
 
     public int getZombieConvertPer() {
@@ -129,15 +135,25 @@ public class MainFrame extends JFrame {
             _playPauseButton.setIcon(_pauseImageIcon);
             _stepButton.setEnabled(false);
             _fastForwardButton.setEnabled(false);
-            _addHumanButton.setEnabled(false);
-            _addZombieButton.setEnabled(false);
+            _resetButton.setEnabled(false);
+
         } else {
             _playPauseButton.setIcon(_playImageIcon);
             _stepButton.setEnabled(true);
             _fastForwardButton.setEnabled(true);
-            _addHumanButton.setEnabled(true);
-            _addZombieButton.setEnabled(true);
+            _resetButton.setEnabled(true);
         }
+    }
+
+    public void disableRetardButtons() {
+        _addHumanButton.setEnabled(false);
+        _addZombieButton.setEnabled(false);
+    }
+
+    public void enableRetardButtons() {
+        _addHumanButton.setEnabled(true);
+        _addZombieButton.setEnabled(true);
+        _resetButton.setEnabled(true);
     }
 
     private void createGUI() {
@@ -187,33 +203,36 @@ public class MainFrame extends JFrame {
     }
 
     private JPanel createRightPanel() {
-        JPanel topPanel = new JPanel(new GridBagLayout());
+        JPanel rightPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(10, 0, 0, 20);
         c.gridy = 0;
-        topPanel.add(new JLabel("Zombies Killed"), c);
+        rightPanel.add(new JLabel("Zombies Killed"), c);
         c.insets = new Insets(0, 0, 0, 20);
         c.gridy = 1;
-        topPanel.add(_zombiesKilledLabel, c);
+        rightPanel.add(_zombiesKilledLabel, c);
         c.insets = new Insets(10, 0, 0, 20);
         c.gridy = 2;
-        topPanel.add(new JLabel("Humans Killed"), c);
+        rightPanel.add(new JLabel("Humans Killed"), c);
         c.insets = new Insets(0, 0, 0, 20);
         c.gridy = 3;
-        topPanel.add(_humansKilledLabel, c);
+        rightPanel.add(_humansKilledLabel, c);
         c.insets = new Insets(10, 0, 0, 20);
         c.gridy = 4;
-        topPanel.add(new JLabel("Humans Saved"), c);
+        rightPanel.add(new JLabel("Humans Saved"), c);
         c.insets = new Insets(0, 0, 0, 20);
         c.gridy = 5;
-        topPanel.add(_humansSavedLabel, c);
+        rightPanel.add(_humansSavedLabel, c);
         c.insets = new Insets(10, 0, 0, 20);
         c.gridy = 6;
-        topPanel.add(new JLabel("Humans Converted"), c);
+        rightPanel.add(new JLabel("Humans Converted"), c);
         c.insets = new Insets(0, 0, 0, 20);
         c.gridy = 7;
-        topPanel.add(_humansConvertedLabel, c);
-        return topPanel;
+        rightPanel.add(_humansConvertedLabel, c);
+        c.gridy = 8;
+        _resetButton = new JButton("Reset");
+        rightPanel.add(_resetButton, c);
+        return rightPanel;
     }
 
     private JPanel createLeftPanel() {
