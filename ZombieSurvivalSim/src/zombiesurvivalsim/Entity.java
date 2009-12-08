@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package zombiesurvivalsim;
 
 import java.awt.Point;
@@ -10,7 +6,6 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * The Entity class includes all the types of humans, zombies, and safe zones,
@@ -30,9 +25,9 @@ public abstract class Entity {
                 images.put(EntityEnum.ZOMBIE, readImage("images/Zombie.gif"));
                 images.put(EntityEnum.COWARD, readImage("images/Coward.gif"));
                 images.put(EntityEnum.HERO, readImage("images/Hero.gif"));
-                images.put(EntityEnum.SAFEZONE, readImage("images/SafeZone.gif"));
+                images.put(EntityEnum.SAFEZONE, readImage("images/Safezone.gif"));
                 imagesLoaded = true;
-            } catch(java.io.IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -55,10 +50,11 @@ public abstract class Entity {
     }
 
     public abstract EntityEnum getType();
+
     public abstract Event getNextEvent(ArrayList<Entity> board);
 
-    public String toString()
-    {
+    @Override
+    public String toString() {
         String entityText = "";
 
         entityText = "\nCreature Type: " + getType() + "  Location: " + _location;

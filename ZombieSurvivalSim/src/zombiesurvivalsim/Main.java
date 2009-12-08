@@ -1,9 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package zombiesurvivalsim;
+
 import javax.swing.SwingUtilities;
 
 /**
@@ -17,13 +13,13 @@ public class Main {
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
                 MainFrame mainFrame = new MainFrame();
                 mainFrame.setVisible(true);
             }
         });
 
-        
-    }
 
+    }
 }

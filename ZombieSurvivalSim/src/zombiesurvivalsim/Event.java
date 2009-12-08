@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package zombiesurvivalsim;
 
 /**
@@ -25,25 +20,30 @@ public class Event {
      * and the priority.
      */
     public Event(ActionEntity item, int priority) throws IndexOutOfBoundsException {
-        if (priority > MAX_PRIORITY || priority < MIN_PRIORITY)
+        if (priority > MAX_PRIORITY || priority < MIN_PRIORITY) {
             throw new IndexOutOfBoundsException();
+        }
         _priority = priority;
         _item = item;
     }
+
     /**
      *
      * @return the item array.
      */
-    public ActionEntity getItem() { return _item; }
+    public ActionEntity getItem() {
+        return _item;
+    }
+
     /**
      *
      * @return the priority of the Event.
      */
-    public int getPriority() { return _priority; }
+    public int getPriority() {
+        return _priority;
+    }
 
-
-    public String toString()
-    {
+    public String toString() {
         String eventText = "";
 
         eventText = "\n Event Priority: " + _priority + _item.toString();

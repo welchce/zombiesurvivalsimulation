@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package zombiesurvivalsim;
 
 /**
@@ -10,6 +5,7 @@ package zombiesurvivalsim;
  * @author ryancummins
  */
 public enum ActionEnum {
+
     MOVE_TO_SAFE,
     HUMAN_SAVED,
     ATTACK_HUMAN,

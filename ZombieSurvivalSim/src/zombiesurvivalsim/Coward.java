@@ -1,9 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package zombiesurvivalsim;
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
@@ -29,7 +25,9 @@ public class Coward extends Entity {
      * @return - the Coward creature enum.
      */
     @Override
-    public EntityEnum getType() { return EntityEnum.COWARD; }
+    public EntityEnum getType() {
+        return EntityEnum.COWARD;
+    }
 
     /**
      * gets the event associated with the Coward.
@@ -38,16 +36,16 @@ public class Coward extends Entity {
     @Override
     public Event getNextEvent(ArrayList<Entity> board) {
         Random randy = new Random();
-        Event event=new Event(new ActionEntity(ActionEnum.MOVE_TO_SAFE, this), 3);
+        Event event = new Event(new ActionEntity(ActionEnum.MOVE_TO_SAFE, this), 3);
 
         for (Entity piece : board) {
             if (piece.getLocation().distance(getLocation()) == 1) {
                 if (piece.getType() == EntityEnum.SAFEZONE) {
-                    event=new Event(new ActionEntity(ActionEnum.HUMAN_SAVED, this), 2);
+                    event = new Event(new ActionEntity(ActionEnum.HUMAN_SAVED, this), 2);
                     break;
                 }
                 if (piece.getType() == EntityEnum.ZOMBIE && randy.nextInt(2) == 1) {
-                    event=new Event(new ActionEntity(ActionEnum.STAND_STILL, this), 2);
+                    event = new Event(new ActionEntity(ActionEnum.STAND_STILL, this), 2);
                     break;
                 }
             }

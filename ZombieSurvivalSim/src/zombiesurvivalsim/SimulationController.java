@@ -21,6 +21,7 @@ import java.awt.Color;
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
 public class SimulationController implements MouseMotionListener, MouseListener {
+
     MainFrame _mainFrame;
     Logger _logger;
     ArrayList<Entity> _board;
@@ -34,7 +35,6 @@ public class SimulationController implements MouseMotionListener, MouseListener 
     int _numHumansConverted = 0;
     boolean _alreadyPlaying = false;
     boolean _addHumanSelected = true;
-    private boolean retardButtonsDisabled = false;
 
     public SimulationController(MainFrame mainFrame, SimulationPanel simulationPanel,
             ArrayList<Entity> board) {
@@ -44,9 +44,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
         _logger = new Logger();
 
-/**
- * This section of code adds the buttons to the GUI.
- */
+        /**
+         * This section of code adds the buttons to the GUI.
+         */
         _mainFrame.addFastForwardButtonHandler(new FastForwardButtonHandler());
         _mainFrame.addHumanButtonHandler(new AddHumanButtonHandler());
         _mainFrame.addPlayPauseButtonHandler(new PlayPauseButtonHandler());
@@ -115,7 +115,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
     private void addCreature(Point addPos) {
         _simulationPanel.setSelection(addPos, Color.CYAN);
-        if (validLocation(addPos) && !retardButtonsDisabled) {
+        if (validLocation(addPos)) {
             if (_addHumanSelected) {
                 Random randy = new Random();
                 switch (randy.nextInt(3)) {
@@ -171,8 +171,6 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         public void actionPerformed(ActionEvent e) {
             do {
                 step();
-                _mainFrame.disableRetardButtons();
-                retardButtonsDisabled = true;
             } while (!_simulationQueue.isEmpty());
         }
     }
@@ -182,8 +180,6 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            _mainFrame.disableRetardButtons();
-            retardButtonsDisabled = true;
             if (!_alreadyPlaying) {
                 _alreadyPlaying = true;
                 _simulationPanel.hideSelection();
@@ -215,8 +211,6 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            _mainFrame.disableRetardButtons();
-            retardButtonsDisabled = true;
             step();
         }
     }
@@ -243,8 +237,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         @Override
         public void actionPerformed(ActionEvent ae) {
             _board.removeAll(_board);
-            while (!_simulationQueue.isEmpty())
+            while (!_simulationQueue.isEmpty()) {
                 _simulationQueue.dequeue();
+            }
             generateSafeZones();
             _mainFrame.updateNumHumans(0);
             _mainFrame.updateNumZombies(0);
@@ -253,8 +248,6 @@ public class SimulationController implements MouseMotionListener, MouseListener 
             _mainFrame.updateZombiesKilledLabel(0);
             _mainFrame.updateHumansSavedLabel(0);
             _simulationPanel.repaint();
-            _mainFrame.enableRetardButtons();
-            retardButtonsDisabled = false;
         }
     }
 
@@ -266,12 +259,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         if (!_simulationQueue.isEmpty()) {
             Event stepEvent = _simulationQueue.dequeue();
             Entity stepEntity = stepEvent.getItem().getEntity();
-            try
-            {
+            try {
                 _logger.write(stepEvent);
-            }
-            catch (java.io.IOException ex)
-            {
+            } catch (java.io.IOException ex) {
                 //ignore fails to write.
             }
             if (_board.contains(stepEntity)) {
@@ -318,16 +308,16 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         Entity targetZone = null;
         for (Entity safezone : _board) {
             if (safezone.getType() == EntityEnum.SAFEZONE &&
-                source.getLocation().distance(safezone.getLocation()) == 1) {
+                    source.getLocation().distance(safezone.getLocation()) == 1) {
                 targetZone = safezone;
                 break;
             }
         }
         if (targetZone != null) {
-            int zombiesAroundZone=0;
+            int zombiesAroundZone = 0;
             for (Entity zombie : _board) {
                 if (zombie.getType() == EntityEnum.ZOMBIE &&
-                    targetZone.getLocation().distance(zombie.getLocation()) == 1) {
+                        targetZone.getLocation().distance(zombie.getLocation()) == 1) {
                     if (++zombiesAroundZone >= 4) {
                         _board.remove(targetZone);
                         break;
@@ -339,7 +329,8 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
     private void inviteNeighbors(Entity source) {
         for (Entity neighbor : _board) {
-            if (neighbor.getLocation().distance(source.getLocation()) == 2) {
+            if (neighbor.getLocation().distance(source.getLocation()) == 2 &&
+                    neighbor.getType() != EntityEnum.ZOMBIE && neighbor.getType() != EntityEnum.SAFEZONE) {
                 Entity targetZombie = getClosestEntity(source, EntityEnum.ZOMBIE);
                 moveTowardsEntity(neighbor, targetZombie);
             }
@@ -502,8 +493,8 @@ public class SimulationController implements MouseMotionListener, MouseListener 
             Point randLoc;
             do {
                 badLoc = false;
-                x = randy.nextInt(MainFrame.SCREEN_SIZE.width-2)+1;
-                y = randy.nextInt(MainFrame.SCREEN_SIZE.height-2)+1;
+                x = randy.nextInt(MainFrame.SCREEN_SIZE.width - 2) + 1;
+                y = randy.nextInt(MainFrame.SCREEN_SIZE.height - 2) + 1;
                 randLoc = new Point(x, y);
 
                 for (Entity piece : _board) {

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package zombiesurvivalsim;
 
 /**
@@ -34,18 +33,18 @@ public class Logger {
      * The default constructor for the Logger class, creates a log file.
      *  @pre computer has valid date
      *  @post _fileName as been created
-    */
+     */
     public Logger() {
         final String DATE_FORMAT_NOW = "MM-dd-yy HH.mm.ss";
         Date curTime = Calendar.getInstance().getTime();
-        _fileName = new SimpleDateFormat(DATE_FORMAT_NOW).format(curTime)+".log";
+        _fileName = new SimpleDateFormat(DATE_FORMAT_NOW).format(curTime) + ".log";
     }
 
     /*
      * Constructor that takes a filename as a parameter.
      *  @pre file name doesn't already exist
      *  @post _fileName as been created
-    */
+     */
     public Logger(String fileName) {
         _fileName = fileName;
     }
@@ -54,20 +53,21 @@ public class Logger {
      * returns the filename of the log file.
      *  @pre log exists
      *  @post _fileName is returned
-    */
-    public String getFileName() { return _fileName; }
+     */
+    public String getFileName() {
+        return _fileName;
+    }
 
     /*
      * writes the passed String st into the log file.
      *  @pre log file is valid
      *  @pre event is valid string
      *  @post log file contains new event
-    */
+     */
     public void write(Event thisEvent) throws java.io.IOException {
-        FileWriter outFile = new FileWriter(_fileName,true);
+        FileWriter outFile = new FileWriter(_fileName, true);
         PrintWriter logWriter = new PrintWriter(outFile);
         logWriter.write(thisEvent.toString());
         logWriter.close();
     }
-
 }
