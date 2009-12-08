@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package zombiesurvivalsim;
 
 import javax.swing.JFrame;
@@ -25,15 +21,15 @@ import java.util.ArrayList;
 import java.net.URL;
 
 /**
- * This is the class that creates the GUI.
+ * The GUI window, and all the GUI components
+ * @author Raymond Cox <rj.cox101 at gmail.com>
  */
 public class MainFrame extends JFrame {
-
-    static final String WINDOW_TITLE = "Zombie Human Survival Simulation";
+    private static final String WINDOW_TITLE = "Zombie Human Survival Simulation";
     public static final Dimension SCREEN_SIZE = new Dimension(20, 21);
     private JLabel _numZombiesLabel = new JLabel("0");
     private JLabel _numHumansLabel = new JLabel("0");
-    private JTextField _perZombiesWinText = new JTextField("50");
+    private JTextField _perZombiesKillText = new JTextField("50");
     private JTextField _perHumansToZombiesText = new JTextField("50");
     private JLabel _zombiesKilledLabel = new JLabel("0");
     private JLabel _humansKilledLabel = new JLabel("0");
@@ -50,6 +46,10 @@ public class MainFrame extends JFrame {
     private ArrayList<Entity> _board = new ArrayList<Entity>();
     private SimulationPanel _simulationPanel = new SimulationPanel(_board);
 
+    /**
+     * Default Constructor
+     * Sets up the GUI and all the GUI actions
+     */
     public MainFrame() {
         this.setPreferredSize(new Dimension(800, 600));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -66,30 +66,57 @@ public class MainFrame extends JFrame {
         _simulationPanel.requestFocus();
     }
 
+    /**
+     * Adds an actionlistener to the play pause button
+     * @param listener
+     */
     public void addPlayPauseButtonHandler(ActionListener listener) {
         _playPauseButton.addActionListener(listener);
     }
 
+    /**
+     * Adds a actionlistener to the step button
+     * @param listener
+     */
     public void addStepButtonHandler(ActionListener listener) {
         _stepButton.addActionListener(listener);
     }
 
+    /**
+     * Adds a actionlistener to the fast forward button
+     * @param listener
+     */
     public void addFastForwardButtonHandler(ActionListener listener) {
         _fastForwardButton.addActionListener(listener);
     }
 
+    /**
+     * Adds a actionlistener to the add human button
+     * @param listener
+     */
     public void addHumanButtonHandler(ActionListener listener) {
         _addHumanButton.addActionListener(listener);
     }
 
+    /**
+     * Adds a actionlistener to the add zombie button
+     * @param listener
+     */
     public void addZombieButtonHandler(ActionListener listener) {
         _addZombieButton.addActionListener(listener);
     }
 
+    /**
+     * Adds a actionlistener to the reset button
+     * @param listener
+     */
     public void addResetButtonHandler(ActionListener listener) {
         _resetButton.addActionListener(listener);
     }
 
+    /**
+     * @return user specificed zombie percent
+     */
     public int getZombieConvertPer() {
         int zombieHumanPer = Integer.valueOf(_perHumansToZombiesText.getText());
         if (zombieHumanPer > 100) {
@@ -101,8 +128,12 @@ public class MainFrame extends JFrame {
         return zombieHumanPer;
     }
 
-    public int getZombiesWinPer() {
-        int zombieWinPer = Integer.valueOf(_perZombiesWinText.getText());
+    /**
+     *
+     * @return the percent the zombies kill humans
+     */
+    public int getZombiesKillPer() {
+        int zombieWinPer = Integer.valueOf(_perZombiesKillText.getText());
         if (zombieWinPer > 100) {
             zombieWinPer = 100;
         }
@@ -112,30 +143,58 @@ public class MainFrame extends JFrame {
         return zombieWinPer;
     }
 
+    /**
+     * Sets the number of humans label
+     * @param num
+     */
     public void updateNumHumans(int num) {
         _numHumansLabel.setText(String.valueOf(num));
     }
 
+    /**
+     * Sets the number of zombies label
+     * @param num
+     */
     public void updateNumZombies(int num) {
         _numZombiesLabel.setText(String.valueOf(num));
     }
 
+    /**
+     * Sets the number of humans saved label
+     * @param num
+     */
     public void updateHumansSavedLabel(int num) {
         _humansSavedLabel.setText(String.valueOf(num));
     }
 
+    /**
+     * Sets the number of humans converted label
+     * @param num
+     */
     public void updateHumansConvertedLabel(int num) {
         _humansConvertedLabel.setText(String.valueOf(num));
     }
 
+    /**
+     * Sets the number of zombies killed label
+     * @param num
+     */
     public void updateZombiesKilledLabel(int num) {
         _zombiesKilledLabel.setText(String.valueOf(num));
     }
 
+    /**
+     * Sets the number of humans killed label
+     * @param num
+     */
     public void updateHumansKilledLabel(int num) {
         _humansKilledLabel.setText(String.valueOf(num));
     }
 
+    /**
+     * Toggles the play pause button based on the boolean variable play
+     * @param play
+     */
     public void togglePlayPause(boolean play) {
         if (play) {
             _playPauseButton.setIcon(_pauseImageIcon);
@@ -154,7 +213,9 @@ public class MainFrame extends JFrame {
             _addZombieButton.setEnabled(true);
         }
     }
-
+    /**
+     * Positions components on the frame
+     */
     private void createGUI() {
         BorderLayout borderLayout = new BorderLayout();
         borderLayout.setVgap(10);
@@ -167,6 +228,12 @@ public class MainFrame extends JFrame {
         this.add(createLeftPanel(), BorderLayout.WEST);
     }
 
+    /**
+     * Generates an image icon based on a file location
+     * @param path path of the image
+     * @param description is the description on mouse hover
+     * @return ImageIcon
+     */
     private ImageIcon createImageIcon(String path, String description) {
         URL imgURL = getClass().getResource(path);
         if (imgURL != null) {
@@ -175,7 +242,10 @@ public class MainFrame extends JFrame {
             throw new RuntimeException("Cannot find file " + path);
         }
     }
-
+    /**
+     * Creates the bottom panel on the GUI
+     * @return JPanel
+     */
     private JPanel createBottomPanel() {
         JPanel bottomPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -200,7 +270,10 @@ public class MainFrame extends JFrame {
         creatureButtons.add(_addHumanButton);
         return bottomPanel;
     }
-
+    /**
+     * Creates the right panel on the GUI
+     * @return JPanel
+     */
     private JPanel createRightPanel() {
         JPanel rightPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -233,7 +306,10 @@ public class MainFrame extends JFrame {
         rightPanel.add(_resetButton, c);
         return rightPanel;
     }
-
+    /**
+     * Creates the left panel on the GUI
+     * @return JPanel
+     */
     private JPanel createLeftPanel() {
         GridBagConstraints c = new GridBagConstraints();
         JPanel leftPanel = new JPanel(new GridBagLayout());
@@ -251,13 +327,12 @@ public class MainFrame extends JFrame {
         leftPanel.add(_numHumansLabel, c);
         c.insets = new Insets(10, 20, 0, 0);
         c.gridy = 4;
-        leftPanel.add(new JLabel("Zombies Win"), c);
+        leftPanel.add(new JLabel("Zombies Kill Humans"), c);
         c.insets = new Insets(0, 20, 0, 0);
         c.gridy = 5;
-        // This is ugly, someone consider fixing?
-        _perZombiesWinText.setPreferredSize(new Dimension(40, 20));
+        _perZombiesKillText.setPreferredSize(new Dimension(40, 20));
         JPanel zombieWinPer = new JPanel(new BorderLayout());
-        zombieWinPer.add(_perZombiesWinText, BorderLayout.WEST);
+        zombieWinPer.add(_perZombiesKillText, BorderLayout.WEST);
         zombieWinPer.add(new JLabel("%", JLabel.LEFT), BorderLayout.CENTER);
         leftPanel.add(zombieWinPer, c);
         c.insets = new Insets(10, 20, 0, 0);
@@ -265,7 +340,6 @@ public class MainFrame extends JFrame {
         leftPanel.add(new JLabel("Humans->Zombies"), c);
         c.insets = new Insets(0, 20, 0, 0);
         c.gridy = 7;
-        // This is ugly, someone consider fixing?
         _perHumansToZombiesText.setPreferredSize(new Dimension(40, 20));
         JPanel humanToZombiePer = new JPanel(new BorderLayout());
         humanToZombiePer.add(_perHumansToZombiesText, BorderLayout.WEST);

@@ -5,23 +5,22 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * A Zombie is a type of Creature. It wanders around randomly, and will attack
+ * A Zombie is a type of Entity. It wanders around randomly, and will attack
  * nearby non-Zombies and Safe zones.
  * @author Raymond Cox <rj.cox101 at gmail.com>
+ * @author Chris Welch
  */
 public class Zombie extends Entity {
 
     /**
-     * Default Constructor
-     * @param position - the initial position of the Zombie.
+     * @param the initial position of the Zombie.
      */
     public Zombie(Point position) {
         super(position);
     }
 
-    /**
-     * returns the Creature type Zombie.
-     * @return - EntityEnum.ZOMBIE
+     /**
+     * @return Zombie entity type
      */
     @Override
     public EntityEnum getType() {
@@ -29,9 +28,7 @@ public class Zombie extends Entity {
     }
 
     /**
-     * gets the events associated with the Zombie.
-     * @param creatures
-     * @return - the next event.
+     * @return the next event associated with Zombie.
      */
     @Override
     public Event getNextEvent(ArrayList<Entity> board) {

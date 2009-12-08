@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * A human is a type of entity.  It will attempt to get the nearest safe zone
+ * A Human is a type of entity.  It will attempt to get the nearest safe zone
  * and will either attack zombies it encounters or flee from the zombie.
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
@@ -13,15 +13,14 @@ public class Human extends Entity {
 
     /**
      * Default Constructor
-     * @param position - the initial position of the Human
+     * @param position the initial position of the Human.
      */
     public Human(Point position) {
         super(position);
     }
 
     /**
-     * returns the Human Creature type
-     * @return - EntityEnum.HUMAN
+     * @return Human entity type
      */
     @Override
     public EntityEnum getType() {
@@ -29,8 +28,7 @@ public class Human extends Entity {
     }
 
     /**
-     * gets the event associated with the Human.
-     * @return - the events.
+     * @return the next event associated with Human.
      */
     @Override
     public Event getNextEvent(ArrayList<Entity> board) {

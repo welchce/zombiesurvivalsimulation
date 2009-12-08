@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * A Coward is a type of Creature that attempts to get to the nearest Safe zone
+ * A Coward is a type of Entity that attempts to get to the nearest Safe zone
  * and either runs from any zombie that it encounters or cowers in fear in its
  * space.
  * @author Raymond Cox <rj.cox101 at gmail.com>
+ * @author Chris Welch
  */
 public class Coward extends Entity {
 
@@ -21,8 +22,7 @@ public class Coward extends Entity {
     }
 
     /**
-     * returns the type of Coward.
-     * @return - the Coward creature enum.
+     * @return Coward type
      */
     @Override
     public EntityEnum getType() {
@@ -30,8 +30,7 @@ public class Coward extends Entity {
     }
 
     /**
-     * gets the event associated with the Coward.
-     * @return - the events.
+     * @return the next event associated with Coward.
      */
     @Override
     public Event getNextEvent(ArrayList<Entity> board) {

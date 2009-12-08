@@ -10,7 +10,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 /**
- *
+ * Graphically shows the simulation
  * @author Raymond Cox <rj.cox101 at gmail.com>
  */
 public class SimulationPanel extends JPanel {
@@ -21,6 +21,11 @@ public class SimulationPanel extends JPanel {
     private Color _selectionColor;
     private boolean _selecting = true;
 
+    /**
+     * Default Constructor
+     * Sets up the simulation panel
+     * @param board the current board to draw
+     */
     public SimulationPanel(ArrayList<Entity> board) {
         _board = board;
         _backbuffer = new BufferedImage(MainFrame.SCREEN_SIZE.width * 24, MainFrame.SCREEN_SIZE.height * 24, BufferedImage.TYPE_INT_ARGB);
@@ -28,6 +33,10 @@ public class SimulationPanel extends JPanel {
         _selectionColor = Color.WHITE;
     }
 
+    /**
+     * draws the simulation
+     * @param g
+     */
     @Override
     public void paint(Graphics g) {
         Graphics bg = _backbuffer.getGraphics();
@@ -49,15 +58,26 @@ public class SimulationPanel extends JPanel {
         g.drawImage(_backbuffer, 0, 0, getWidth(), getHeight(), this);
     }
 
+    /**
+     * Sets the selected grid location to color
+     * @param location
+     * @param color
+     */
     public void setSelection(Point location, Color color) {
         _selectionLoc = location;
         _selectionColor = color;
     }
 
+    /**
+     * Hides the selection, useful when the simulation is running
+     */
     public void hideSelection() {
         _selecting = false;
     }
 
+    /**
+     * Shows the selection, useful when the simulation isn't running
+     */
     public void showSelection() {
         _selecting = true;
     }

@@ -15,9 +15,11 @@ public class Event {
     //the char[] array for the item.
     ActionEntity _item;
 
-    /*
-     *Construtor for the item that assigns the passed values into the item array
+    /**
+     * Construtor for the item that assigns the passed values into the item array
      * and the priority.
+     * @param item is the action and entity combination
+     * @param priority the importance of the event to be executed
      */
     public Event(ActionEntity item, int priority) throws IndexOutOfBoundsException {
         if (priority > MAX_PRIORITY || priority < MIN_PRIORITY) {
@@ -37,12 +39,17 @@ public class Event {
 
     /**
      *
-     * @return the priority of the Event.
+     * @return the priority of the event.
      */
     public int getPriority() {
         return _priority;
     }
 
+    /**
+     *
+     * @return the string representation of the event.
+     */
+    @Override
     public String toString() {
         String eventText = "";
 
