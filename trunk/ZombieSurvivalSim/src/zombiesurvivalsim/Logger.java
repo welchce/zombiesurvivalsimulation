@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package zombiesurvivalsim;
 
 /**
@@ -26,7 +22,7 @@ import java.text.SimpleDateFormat;
 
 public class Logger {
 
-    //the name of the file that we are printing the log to.
+    // The name of the file that we are printing the log to.
     String _fileName;
 
     /*

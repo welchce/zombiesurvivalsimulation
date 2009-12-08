@@ -1,9 +1,3 @@
-/*
- * The Simulation Controller is the main class of the Zombie Survival
- * Simulation.  It controls how the GUI interacts with the other classes and
- * makes the program work correctly.  Most of the functions are obvious in the
- * tasks they perform, because the code is self documenting.
- */
 package zombiesurvivalsim;
 
 import java.awt.event.ActionListener;
@@ -17,8 +11,14 @@ import java.awt.event.MouseListener;
 import java.awt.Color;
 
 /**
- *
+ * The Simulation Controller is the main class of the Zombie Survival
+ * Simulation.  It controls how the GUI interacts with the other classes and
+ * makes the program work correctly.  Most of the functions are obvious in the
+ * tasks they perform, because the code is self documenting.
  * @author Raymond Cox <rj.cox101 at gmail.com>
+ * @author Chris Welch
+ * @author Kurt Stauffer
+ * @author Ryan Cummins
  */
 public class SimulationController implements MouseMotionListener, MouseListener {
 
@@ -33,9 +33,14 @@ public class SimulationController implements MouseMotionListener, MouseListener 
     int _numHumansKilled = 0;
     int _numZombiesKilled = 0;
     int _numHumansConverted = 0;
-    boolean _alreadyPlaying = false;
+    boolean _playing = false;
     boolean _addHumanSelected = true;
 
+    /**
+     * Default Constructor
+     * @param mainFrame
+     * @param simulationPanel
+     */
     public SimulationController(MainFrame mainFrame, SimulationPanel simulationPanel,
             ArrayList<Entity> board) {
         _mainFrame = mainFrame;
@@ -56,12 +61,6 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
         this.generateSafeZones();
     }
-
-    /**
-     * The next section of code handles mouse events such as adding creatures
-     * to the board and lighting up the point on the grid that the mouse is
-     * currently on.
-     */
     public void mouseExited(MouseEvent arg0) {
     }
 
@@ -70,7 +69,10 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
     public void mouseClicked(MouseEvent arg0) {
     }
-
+    /**
+     * change the selection from blue to white or red
+     * @param arg0 the mouse position and type
+     */
     public void mouseReleased(MouseEvent arg0) {
         Point addPos = getGridPoint(arg0.getPoint());
         if (validLocation(addPos)) {
@@ -80,7 +82,10 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
         _simulationPanel.repaint();
     }
-
+    /**
+     * move the selection to x,y
+     * @param arg0 the mouse position and type
+     */
     public void mouseMoved(MouseEvent arg0) {
         Point addPos = getGridPoint(arg0.getPoint());
         if (validLocation(addPos)) {
@@ -90,21 +95,31 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
         _simulationPanel.repaint();
     }
-
+    /**
+     * add a creature when the mouse is dragged across the screen
+     * @param arg0 the mouse position and type
+     */
     @Override
     public void mouseDragged(MouseEvent arg0) {
-        if (!_alreadyPlaying) {
+        if (!_playing) {
             addCreature(getGridPoint(arg0.getPoint()));
         }
     }
-
+    /**
+     * add a creature when the mouse is pressed
+     * @param arg0 the mouse position and type
+     */
     @Override
     public void mousePressed(MouseEvent arg0) {
-        if (!_alreadyPlaying) {
+        if (!_playing) {
             addCreature(getGridPoint(arg0.getPoint()));
         }
     }
-
+    /**
+     * converts mouse positions to grid positions
+     * @param mousePoint the mouse position
+     * @return the grid position of mouse position
+     */
     private Point getGridPoint(Point mousePoint) {
         int tileWidth = (int) Math.floor(_simulationPanel.getWidth() / MainFrame.SCREEN_SIZE.width);
         int tileHeight = (int) Math.floor(_simulationPanel.getHeight() / MainFrame.SCREEN_SIZE.height);
@@ -112,7 +127,10 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         int y = (int) Math.floor(mousePoint.getY() / tileHeight);
         return new Point(x, y);
     }
-
+    /**
+     * adds a creature at addpos
+     * @param addPos which is a grid point
+     */
     private void addCreature(Point addPos) {
         _simulationPanel.setSelection(addPos, Color.CYAN);
         if (validLocation(addPos)) {
@@ -147,8 +165,10 @@ public class SimulationController implements MouseMotionListener, MouseListener 
     }
 
 
-// The validLocation function returns whether a point on the grid is a valid
-// location.
+    /**
+     * checks if the location is empty and on the grid
+     * @return valid location
+     */
     private boolean validLocation(Point pos) {
         if (pos.x >= MainFrame.SCREEN_SIZE.width ||
                 pos.y >= MainFrame.SCREEN_SIZE.height ||
@@ -164,7 +184,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         return true;
     }
 
-    // FastForwardButtonHandler controls the fast forward button.
+    /**
+     * handler for the fast forward button
+     */
     class FastForwardButtonHandler implements ActionListener {
 
         @Override
@@ -175,19 +197,22 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
-    // PlayPauseButtonHandler controls the play/pause button.
+
+    /**
+     * handler for the play/pause button
+     */
     class PlayPauseButtonHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            if (!_alreadyPlaying) {
-                _alreadyPlaying = true;
+            if (!_playing) {
+                _playing = true;
                 _simulationPanel.hideSelection();
                 new Thread() {
 
                     @Override
                     public void run() {
-                        while (_alreadyPlaying) {
+                        while (_playing) {
                             do {
                                 step();
                             } while (!_simulationQueue.isEmpty());
@@ -199,14 +224,16 @@ public class SimulationController implements MouseMotionListener, MouseListener 
                     }
                 }.start();
             } else {
-                _alreadyPlaying = false;
+                _playing = false;
                 _simulationPanel.showSelection();
             }
-            _mainFrame.togglePlayPause(_alreadyPlaying);
+            _mainFrame.togglePlayPause(_playing);
         }
     }
 
-    // StepButtonHandler controls the step button.
+    /**
+     * handler for the step button
+     */
     class StepButtonHandler implements ActionListener {
 
         @Override
@@ -215,6 +242,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * handler for the add zombie button
+     */
     class AddZombieButtonHandler implements ActionListener {
 
         @Override
@@ -223,6 +253,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * handler for the add human button
+     */
     class AddHumanButtonHandler implements ActionListener {
 
         @Override
@@ -231,7 +264,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
-    // The reset button resets the simulation to its original state.
+    /**
+     * handler for the reset button
+     */
     class ResetButtonHandler implements ActionListener {
 
         @Override
@@ -251,7 +286,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
-    // Controls the step function.
+    /**
+     * execute one event in the eventqueue and update the screen
+     */
     private void step() {
         if (_simulationQueue.isEmpty()) {
             repopulateQueue();
@@ -303,7 +340,10 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         _simulationPanel.repaint();
     }
 
-    //
+    /**
+     * check if any safe zones are destroyed
+     * @param source is the entity performing the action
+     */
     private void blockSafeZone(Entity source) {
         Entity targetZone = null;
         for (Entity safezone : _board) {
@@ -327,6 +367,10 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * invite neighbors to attack zombies
+     * @param source is the entity performing the action
+     */
     private void inviteNeighbors(Entity source) {
         for (Entity neighbor : _board) {
             if (neighbor.getLocation().distance(source.getLocation()) == 2 &&
@@ -337,6 +381,10 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * move into safezone
+     * @param source is the entity performing the action
+     */
     private void moveSaved(Entity source) {
         for (Entity safezone : _board) {
             if (safezone.getType() == EntityEnum.SAFEZONE) {
@@ -350,6 +398,10 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * convert nearby human to a zombie
+     * @param source is the entity performing the action
+     */
     private void convertNearbyHuman(Entity source) {
         Random randy = new Random();
         if (randy.nextInt(100) < _mainFrame.getZombieConvertPer()) {
@@ -364,9 +416,13 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * attack a nearby zombie
+     * @param source is the entity performing the action
+     */
     private void attackNearbyZombie(Entity source) {
         Random randy = new Random();
-        if (randy.nextInt(100) > _mainFrame.getZombiesWinPer()) {
+        if (randy.nextInt(100) > _mainFrame.getZombiesKillPer()) {
             Entity nearbyZombie = getClosestEntity(source, EntityEnum.ZOMBIE);
             if (nearbyZombie.getLocation().distance(source.getLocation()) == 1) {
                 _board.remove(nearbyZombie);
@@ -376,9 +432,13 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * attack a nearby human
+     * @param source is the entity performing the action
+     */
     private void attackNearbyHuman(Entity source) {
         Random randy = new Random();
-        if (randy.nextInt(100) < _mainFrame.getZombiesWinPer()) {
+        if (randy.nextInt(100) < _mainFrame.getZombiesKillPer()) {
             Entity nearbyHuman = getClosestHuman(source);
             if (nearbyHuman != null) {
                 _board.remove(nearbyHuman);
@@ -388,6 +448,11 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * get the closest human next to source
+     * @param source is the entity performing the action
+     * @return closest human
+     */
     private Entity getClosestHuman(Entity source) {
         for (Entity nearbyHuman : _board) {
             if (nearbyHuman.getLocation().distance(source.getLocation()) == 1 &&
@@ -400,6 +465,10 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         return null;
     }
 
+    /**
+     * move randomly around the grid
+     * @param source is the entity performing the action
+     */
     private void moveRandomly(Entity source) {
         Random randy = new Random();
         Point newLocation;
@@ -426,9 +495,15 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * move source towards entity if possible
+     * @param source is the entity performing the action
+     * @param destination is hte entity source is moving towards
+     */
     private void moveTowardsEntity(Entity source, Entity destination) {
         Point newLocation;
-        if (getPossibleMoves(source) > 0 && destination != null) {
+        if (destination == null) moveRandomly(source);
+        else if (getPossibleMoves(source) > 0) {
             newLocation = new Point(source.getLocation());
             if (destination.getLocation().x > newLocation.x) {
                 newLocation.x++;
@@ -439,7 +514,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
             } else if (destination.getLocation().y < newLocation.y) {
                 newLocation.y--;
             }
-            if (validLocation(newLocation)) {
+            if (validLocation(newLocation) && !newLocation.equals(source.getLocation())) {
                 source.setLocation(newLocation);
             } else {
                 moveRandomly(source);
@@ -447,6 +522,11 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * get the closest type of entity based on searchtype
+     * @param source is the entity performing the action
+     * @param serachtype is the closest type of entity you want to get
+     */
     private Entity getClosestEntity(Entity source, EntityEnum searchType) {
         Entity closeEntity = null;
         for (Entity piece : _board) {
@@ -463,28 +543,36 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         return closeEntity;
     }
 
-    private int getPossibleMoves(Entity creature) {
+    /**
+     * get the number of moves an entity can perform
+     * @param source is the entity performing the action
+     */
+    private int getPossibleMoves(Entity source) {
         int possibleMoves = 4;
         for (Entity piece : _board) {
-            if (creature.getLocation().distance(piece.getLocation()) == 1) {
+            if (source.getLocation().distance(piece.getLocation()) == 1) {
                 possibleMoves -= 1;
             }
         }
-        if (creature.getLocation().x + 1 >= MainFrame.SCREEN_SIZE.width) {
+        if (source.getLocation().x + 1 >= MainFrame.SCREEN_SIZE.width) {
             possibleMoves -= 1;
         }
-        if (creature.getLocation().y + 1 >= MainFrame.SCREEN_SIZE.height) {
+        if (source.getLocation().y + 1 >= MainFrame.SCREEN_SIZE.height) {
             possibleMoves -= 1;
         }
-        if (creature.getLocation().x - 1 < 0) {
+        if (source.getLocation().x - 1 < 0) {
             possibleMoves -= 1;
         }
-        if (creature.getLocation().y - 1 < 0) {
+        if (source.getLocation().y - 1 < 0) {
             possibleMoves -= 1;
         }
         return possibleMoves;
     }
 
+    /**
+     * make 5 safe zones randomly on the simulation panel at the beginning of the
+     * simulation
+     */
     private void generateSafeZones() {
         Random randy = new Random();
         for (int i = 0; i < 5; i++) {
@@ -508,6 +596,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    /**
+     * repopulate the priority queue with each entitys next event
+     */
     private void repopulateQueue() {
         for (Entity piece : _board) {
             Event nextEvent = piece.getNextEvent(_board);

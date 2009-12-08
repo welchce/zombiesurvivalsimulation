@@ -1,13 +1,9 @@
-/* 
- * ActionEntity
- * November 15, 2009
- */
 package zombiesurvivalsim;
 
 /**
  * An ActionEntity is a set that contains all of the information necessary
  * to perform an action tied to an Eevent.
- * @author ryancummins
+ * @author Ryan Cummins
  */
 public class ActionEntity {
 
@@ -16,9 +12,9 @@ public class ActionEntity {
 
     /**
      * Default Constructor.
-     * @param creature - the creature associated with the action.
-     * @param action - the action being performed
-     * @param location - the location involved in the action.
+     * @param creature associated with the action.
+     * @param action being performed
+     * @param location involved in the action.
      */
     public ActionEntity(ActionEnum action, Entity entity) {
         _action = action;
@@ -26,17 +22,22 @@ public class ActionEntity {
     }
 
     /**
-     * getAction() returns the action.
-     * @return - the action being performed.
+     * @return action being performed.
      */
     public ActionEnum getAction() {
         return _action;
     }
 
+    /**
+     * @return entity associated with the action.
+     */
     public Entity getEntity() {
         return _entity;
     }
 
+    /**
+     * @return string representation of the action entity.
+     */
     @Override
     public String toString() {
         String actionText = "";

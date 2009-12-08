@@ -5,23 +5,23 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * A Hero is a type of Creature. It attempts to get ot the nearest safe zone
+ * A Hero is a type of Entity. It attempts to get ot the nearest safe zone
  * but will attack zombies that it encounters in the process.
  * @author Raymond Cox <rj.cox101 at gmail.com>
+ * @author Chris Welch
  */
 public class Hero extends Entity {
 
     /**
      * Default Constructor
-     * @param position - the initial position of the Hero.
+     * @param position the initial position of the Hero.
      */
     public Hero(Point position) {
         super(position);
     }
 
     /**
-     * returns the Hero Creature type.
-     * @return - EntityEnum.Hero
+     * @return Hero type
      */
     @Override
     public EntityEnum getType() {
@@ -29,8 +29,7 @@ public class Hero extends Entity {
     }
 
     /**
-     * gets the event associated with the Hero.
-     * @return - the events.
+     * @return the next event associated with Hero.
      */
     @Override
     public Event getNextEvent(ArrayList<Entity> board) {

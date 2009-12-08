@@ -2,7 +2,7 @@ package zombiesurvivalsim;
 
 /**
  * ActionEnum is an enum for the action.
- * @author ryancummins
+ * @author Ryan Cummins
  */
 public enum ActionEnum {
 
