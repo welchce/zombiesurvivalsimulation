@@ -1,5 +1,5 @@
-
 package zombiesurvivalsim;
+
 import java.util.ArrayList;
 
 /**
@@ -10,10 +10,11 @@ import java.util.ArrayList;
  * items in the array that have a character array and a priority value.
  */
 public class EventQueue {
+
     ArrayList<Event> _items = new ArrayList();
 
     public void print() {
-        for (int i=0; i<_items.size(); i++) {
+        for (int i = 0; i < _items.size(); i++) {
             System.out.println(_items.get(i).toString());
         }
     }
@@ -36,8 +37,8 @@ public class EventQueue {
      * until it does not have a a priority that exceeds one of its children.
      */
     private void bubbleDown(Event item) {
-        int child1 = _items.indexOf(item)*2+1;
-        int child2 = _items.indexOf(item)*2+2;
+        int child1 = _items.indexOf(item) * 2 + 1;
+        int child2 = _items.indexOf(item) * 2 + 2;
         if (child1 < _items.size() && child1 >= 0 && child2 < _items.size() && child2 >= 0) {
             if (_items.get(child1).getPriority() < _items.get(child2).getPriority()) {
                 if (_items.get(child1).getPriority() < item.getPriority()) {
@@ -45,34 +46,34 @@ public class EventQueue {
                     bubbleDown(item);
                 }
             } else if (_items.get(child2).getPriority() < item.getPriority()) {
-                    swap(_items.get(child2), item);
-                    bubbleDown(item);
-                }
+                swap(_items.get(child2), item);
+                bubbleDown(item);
+            }
         } else if (child1 < _items.size() && child1 >= 0) {
-             if (_items.get(child1).getPriority() < item.getPriority()) {
-                    swap(_items.get(child1), item);
-                    bubbleDown(item);
-                }
+            if (_items.get(child1).getPriority() < item.getPriority()) {
+                swap(_items.get(child1), item);
+                bubbleDown(item);
+            }
         }
     }
 
-/**
- * The bubbleUp function is analogous to the bubbleDown function except it
- * works in reverse.
- */
+    /**
+     * The bubbleUp function is analogous to the bubbleDown function except it
+     * works in reverse.
+     */
     private void bubbleUp(Event item) {
 
         if (_items.indexOf(item) != 0) {
             // index is even
-            if (_items.indexOf(item)%2 == 0) {
-                Event parent = _items.get((_items.indexOf(item)-2)/2);
+            if (_items.indexOf(item) % 2 == 0) {
+                Event parent = _items.get((_items.indexOf(item) - 2) / 2);
                 if (parent.getPriority() > item.getPriority()) {
                     swap(parent, item);
                     bubbleUp(item);
                 }
             // index is odd
             } else {
-                Event parent = _items.get((_items.indexOf(item)-1)/2);
+                Event parent = _items.get((_items.indexOf(item) - 1) / 2);
                 if (parent.getPriority() > item.getPriority()) {
                     swap(parent, item);
                     bubbleUp(item);
@@ -81,18 +82,24 @@ public class EventQueue {
         }
     }
 
-    public ArrayList<Event> getEvents() { return _items; }
+    public ArrayList<Event> getEvents() {
+        return _items;
+    }
 
     /**
      * The getSize function returns the size of the Priority Queue.
      */
-    public int getSize() { return _items.size(); }
+    public int getSize() {
+        return _items.size();
+    }
 
     /**
      * The isEmpty function returns true if the Priority Queue is empty,
      * otherwise it will return false.
      */
-    public boolean isEmpty() { return _items.isEmpty(); }
+    public boolean isEmpty() {
+        return _items.isEmpty();
+    }
 
     /**
      * The swap function takes 2 Event items and swaps them within the
@@ -109,9 +116,11 @@ public class EventQueue {
      * queue and then updates the queue.
      */
     public Event dequeue() {
-        swap(_items.get(0), _items.get(_items.size()-1));
-        Event item = _items.remove(_items.size()-1);
-        if (!isEmpty()) bubbleDown(_items.get(0));
+        swap(_items.get(0), _items.get(_items.size() - 1));
+        Event item = _items.remove(_items.size() - 1);
+        if (!isEmpty()) {
+            bubbleDown(_items.get(0));
+        }
         return item;
     }
 }

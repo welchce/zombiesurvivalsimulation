@@ -2,7 +2,6 @@
  * ActionEntity
  * November 15, 2009
  */
-
 package zombiesurvivalsim;
 
 /**
@@ -38,8 +37,8 @@ public class ActionEntity {
         return _entity;
     }
 
-    public String toString()
-    {
+    @Override
+    public String toString() {
         String actionText = "";
 
         actionText = "\nAction: " + _action + _entity.toString();

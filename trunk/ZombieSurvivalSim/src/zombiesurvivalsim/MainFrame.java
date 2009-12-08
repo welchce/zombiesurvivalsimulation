@@ -50,7 +50,6 @@ public class MainFrame extends JFrame {
     private ArrayList<Entity> _board = new ArrayList<Entity>();
     private SimulationPanel _simulationPanel = new SimulationPanel(_board);
 
-
     public MainFrame() {
         this.setPreferredSize(new Dimension(800, 600));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -61,7 +60,7 @@ public class MainFrame extends JFrame {
         this.setTitle(WINDOW_TITLE);
         this.pack();
         this.setLocationRelativeTo(null);
-        _simulationController = new SimulationController(this, _simulationPanel,_board);
+        _simulationController = new SimulationController(this, _simulationPanel, _board);
         _simulationPanel.addMouseMotionListener(_simulationController);
         _simulationPanel.addMouseListener(_simulationController);
         _simulationPanel.requestFocus();
@@ -93,15 +92,23 @@ public class MainFrame extends JFrame {
 
     public int getZombieConvertPer() {
         int zombieHumanPer = Integer.valueOf(_perHumansToZombiesText.getText());
-        if (zombieHumanPer > 100) zombieHumanPer = 100;
-        if (zombieHumanPer < 0) zombieHumanPer = 0;
+        if (zombieHumanPer > 100) {
+            zombieHumanPer = 100;
+        }
+        if (zombieHumanPer < 0) {
+            zombieHumanPer = 0;
+        }
         return zombieHumanPer;
     }
 
     public int getZombiesWinPer() {
         int zombieWinPer = Integer.valueOf(_perZombiesWinText.getText());
-        if (zombieWinPer > 100) zombieWinPer = 100;
-        if (zombieWinPer < 0) zombieWinPer = 0;
+        if (zombieWinPer > 100) {
+            zombieWinPer = 100;
+        }
+        if (zombieWinPer < 0) {
+            zombieWinPer = 0;
+        }
         return zombieWinPer;
     }
 
@@ -135,24 +142,17 @@ public class MainFrame extends JFrame {
             _stepButton.setEnabled(false);
             _fastForwardButton.setEnabled(false);
             _resetButton.setEnabled(false);
+            _addHumanButton.setEnabled(false);
+            _addZombieButton.setEnabled(false);
 
         } else {
             _playPauseButton.setIcon(_playImageIcon);
             _stepButton.setEnabled(true);
             _fastForwardButton.setEnabled(true);
             _resetButton.setEnabled(true);
+            _addHumanButton.setEnabled(true);
+            _addZombieButton.setEnabled(true);
         }
-    }
-
-    public void disableRetardButtons() {
-        _addHumanButton.setEnabled(false);
-        _addZombieButton.setEnabled(false);
-    }
-
-    public void enableRetardButtons() {
-        _addHumanButton.setEnabled(true);
-        _addZombieButton.setEnabled(true);
-        _resetButton.setEnabled(true);
     }
 
     private void createGUI() {
@@ -194,7 +194,7 @@ public class MainFrame extends JFrame {
         c.gridx = 4;
         _addZombieButton = new JRadioButton("Zombie", false);
         bottomPanel.add(_addZombieButton, c);
-        
+
         ButtonGroup creatureButtons = new ButtonGroup();
         creatureButtons.add(_addZombieButton);
         creatureButtons.add(_addHumanButton);
