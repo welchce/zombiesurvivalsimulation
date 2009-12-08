@@ -6,7 +6,7 @@
 package zombiesurvivalsim;
 
 /**
- * An ActionEntity is a set that contains all of the information nessisary
+ * An ActionEntity is a set that contains all of the information necessary
  * to perform an action tied to an Eevent.
  * @author ryancummins
  */

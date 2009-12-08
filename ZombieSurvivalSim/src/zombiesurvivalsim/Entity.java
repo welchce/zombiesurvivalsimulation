@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- *
- * @author Raymond Cox <rj.cox101 at gmail.com>
+ * The Entity class includes all the types of humans, zombies, and safe zones,
+ * and how they interact.
  */
 public abstract class Entity {
 

@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.net.URL;
 
 /**
- *
- * @author Raymond Cox <rj.cox101 at gmail.com>
+ * This is the class that creates the GUI.
  */
 public class MainFrame extends JFrame {
 
