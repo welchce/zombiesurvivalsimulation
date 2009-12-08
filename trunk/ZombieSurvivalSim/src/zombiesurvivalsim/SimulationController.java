@@ -1,6 +1,8 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * The Simulation Controller is the main class of the Zombie Survival
+ * Simulation.  It controls how the GUI interacts with the other classes and
+ * makes the program work correctly.  Most of the functions are obvious in the
+ * tasks they perform, because the code is self documenting.
  */
 package zombiesurvivalsim;
 
@@ -42,6 +44,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
 
         _logger = new Logger();
 
+/**
+ * This section of code adds the buttons to the GUI.
+ */
         _mainFrame.addFastForwardButtonHandler(new FastForwardButtonHandler());
         _mainFrame.addHumanButtonHandler(new AddHumanButtonHandler());
         _mainFrame.addPlayPauseButtonHandler(new PlayPauseButtonHandler());
@@ -52,6 +57,11 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         this.generateSafeZones();
     }
 
+    /**
+     * The next section of code handles mouse events such as adding creatures
+     * to the board and lighting up the point on the grid that the mouse is
+     * currently on.
+     */
     public void mouseExited(MouseEvent arg0) {
     }
 
@@ -136,6 +146,9 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         _simulationPanel.repaint();
     }
 
+
+// The validLocation function returns whether a point on the grid is a valid
+// location.
     private boolean validLocation(Point pos) {
         if (pos.x >= MainFrame.SCREEN_SIZE.width ||
                 pos.y >= MainFrame.SCREEN_SIZE.height ||
@@ -151,6 +164,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         return true;
     }
 
+    // FastForwardButtonHandler controls the fast forward button.
     class FastForwardButtonHandler implements ActionListener {
 
         @Override
@@ -163,6 +177,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    // PlayPauseButtonHandler controls the play/pause button.
     class PlayPauseButtonHandler implements ActionListener {
 
         @Override
@@ -195,6 +210,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    // StepButtonHandler controls the step button.
     class StepButtonHandler implements ActionListener {
 
         @Override
@@ -221,6 +237,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    // The reset button resets the simulation to its original state.
     class ResetButtonHandler implements ActionListener {
 
         @Override
@@ -241,6 +258,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         }
     }
 
+    // Controls the step function.
     private void step() {
         if (_simulationQueue.isEmpty()) {
             repopulateQueue();
@@ -295,6 +313,7 @@ public class SimulationController implements MouseMotionListener, MouseListener 
         _simulationPanel.repaint();
     }
 
+    //
     private void blockSafeZone(Entity source) {
         Entity targetZone = null;
         for (Entity safezone : _board) {
