@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * A Hero is a type of Entity. It attempts to get ot the nearest safe zone
+ * A Hero is a type of Entity. It attempts to get to the nearest safe zone
  * but will attack zombies that it encounters in the process.
  * @author Raymond Cox <rj.cox101 at gmail.com>
  * @author Chris Welch
