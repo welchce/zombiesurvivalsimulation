@@ -1,0 +1,1 @@
+Simulates zombie vs humans based on certain parameters
